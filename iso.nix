@@ -13,4 +13,6 @@
   boot.blacklistedKernelModules = [ "qcom_q6v5_pas" ];
 
   hardware.enableAllHardware = lib.mkForce false;
+
+  isoImage.forceTextMode = true;
 }

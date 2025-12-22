@@ -25,7 +25,7 @@
         "i2c_hid_of"
         "i2c_qcom_geni"
         "dispcc-x1e80100"
-        "gpucc-x1e80100"
+        "gpucc-x1p42100"
         "phy_qcom_edp"
         "panel_edp"
         "msm"
@@ -36,12 +36,15 @@
         "ps883x"
         "pmic_glink_altmode"
         "qrtr"
+
+        "panel_samsung_atna33xc20"
       ];
     };
 
     kernelParams = [
       "pd_ignore_unused"
       "clk_ignore_unused"
+      "console=tty1"
     ];
 
     kernelPackages = pkgs.callPackage ../packages/x1e42100-linux.nix { };
