@@ -58,6 +58,16 @@
                   enable = true;
                   systemd.enable = true;
                 };
+
+                users.users.user = {
+                  isNormalUser = true;
+                  password = "arm";
+                  extraGroups = [
+                    "wheel"
+                    "networkmanager"
+                  ];
+                };
+
                 hardware.enableRedistributableFirmware = true;
                 fileSystems = {
                   "/" = {
@@ -71,6 +81,7 @@
                 };
 
                 environment.systemPackages = with pkgs; [
+                  kitty
                   neovim
                   git
                 ];
