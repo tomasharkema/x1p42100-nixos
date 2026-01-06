@@ -82,7 +82,7 @@
                   };
                   "/boot" = {
                     device = "/dev/disk/by-label/SYSTEM_DRV";
-                    fsType = "vsfat";
+                    fsType = "vfat";
                   };
                 };
 
