@@ -23,6 +23,10 @@
           { allowSubstitutes = true; };
     in
     {
+      nixosModules = {
+        qcom-fw = ./modules/firmware.nix;
+	x1p = ./modules/x1p42100.nix;
+      };
       nixosConfigurations = {
         slim5xISO = nixpkgs.lib.nixosSystem {
           system = "aarch64-linux";
