@@ -5,7 +5,9 @@ NixOS for the Qualcomm Snapdragon X Plus (x1p42100) based *Lenovo Ideapad Slim 5
 ## TODO
 
 - Get the ISO to boot __DONE__
-- Add a system configuration output to the flake __IN PROGRESS__
+- Add a system configuration output to the flake __DONE__
+- Get firmware -> graphics __DONE__
+- Make it convenient to use in other configs __IN PROGRESS__
 
 ## Related repos
 
