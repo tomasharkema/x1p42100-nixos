@@ -7,7 +7,7 @@
 {
   hardware.deviceTree = {
     enable = true;
-    name = "qcom/x1p42100-lenovo-ideapad-slim5x.dtb";
+    name = "qcom/x1p42100-lenovo-ideapad-slim5x-oled.dtb";
   };
 
   systemd.tpm2.enable = false;
@@ -42,9 +42,9 @@
         "f2fs"
       ];
       extraFirmwarePaths = [
-      	"qcom/gen71500_sqe.fw"
-      	"qcom/gen71500_gmu.bin"
-      	"qcom/x1p42100/gen71500_zap.mbn"
+        "qcom/gen71500_sqe.fw"
+        "qcom/gen71500_gmu.bin"
+        "qcom/x1p42100/gen71500_zap.mbn"
         "qcom/x1p42100/LENOVO/83HL/qcadsp8380.mbn"
         "qcom/x1p42100/LENOVO/83HL/qccdsp8380.mbn"
         "qcom/x1p42100/LENOVO/83HL/qcdxkmsucpurwa.mbn"
