@@ -1,20 +1,11 @@
-
-{ inputs, pkgs, lib, ... }:
 {
-  boot = {
-    loader = {
-      efi.canTouchEfiVariables = true;
-      systemd-boot = {
-        enable = true;
-        configurationLimit = 2;
-      };
-    };
-    initrd = {
-      enable = true;
-      systemd.enable = true;
-    };
-  };
-
+  inputs,
+  pkgs,
+  lib,
+  ...
+}:
+{
+  imports = [ ./hardware.nix ];
   users.users = {
     root.initialPassword = "root";
 
@@ -27,25 +18,6 @@
       ];
     };
   };
-
-  #hardware.enableRedistributableFirmware = true;
-  hardware.firmware = with pkgs; [
-    linux-firmware
-    wireless-regdb
-    (pkgs.callPackage ./modules/firmware.nix {})
-  ];
-
-  fileSystems = {
-    "/" = {
-      device = "/dev/disk/by-path/platform-1bf8000.pci-pci-0006:01:00.0-nvme-1-part6";
-      fsType = "ext4";
-    };
-    "/boot" = {
-      device = "/dev/disk/by-label/SYSTEM_DRV";
-      fsType = "vfat";
-    };
-  };
-
   environment.systemPackages = with pkgs; [
     kitty
     wofi
@@ -66,7 +38,8 @@
     hyprland = {
       enable = true;
       package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-      portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+      portalPackage =
+        inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
     };
   };
 
