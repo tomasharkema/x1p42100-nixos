@@ -32,13 +32,13 @@
       slim5xISO = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
         modules = [
-          "${nixpkgs-patched}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+          "${nixpkgs-patched}/nixos/modules/installer/cd-dvd/installation-cd-graphical-gnome.nix"
           ./iso.nix
           ./modules/x1p42100.nix
           {
-            nixpkgs.buildPlatform = "x86_64-linux";
+            # nixpkgs.buildPlatform = "x86_64-linux";
             # pkgsCross.<yourtarget>.system
-            nixpkgs.hostPlatform = "aarch64-linux";
+            # nixpkgs.hostPlatform = "aarch64-linux";
 
             nix = {
               settings.experimental-features = [
