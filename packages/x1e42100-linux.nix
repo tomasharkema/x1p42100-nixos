@@ -10,7 +10,7 @@ linuxPackagesFor (buildLinux {
   src = fetchFromGitHub {
     owner = "jglathe";
     repo = "linux_ms_dev_kit";
-    rev = "jg/ubuntu-qcom-x1e-6.19";
-    hash = "sha256-BNQksysGZ4+K2nM/nQKS9L1ON06UvHmDWs58tzJRcuw=";
+    rev = "jg/ubuntu-qcom-x1e-6.19.0-jg-0";
+    hash = "sha256-PLQaIKZ6Kcwf56CgxNQg45EilTOi6xnjgPjP6BsTcgM=";
   };
 })
