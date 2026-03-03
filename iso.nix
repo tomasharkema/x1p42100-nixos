@@ -22,7 +22,11 @@
     ];
   };
 
-  isoImage.forceTextMode = true;
+  isoImage = {
+    forceTextMode = true;
+    squashfsCompression = "zstd";
+  };
+
   environment.systemPackages = with pkgs; [
     neovim
     git

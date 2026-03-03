@@ -57,6 +57,7 @@
     kernelParams = [
       "pd_ignore_unused"
       "clk_ignore_unused"
+      "efi=noruntime"
       #"console=tty1"
     ];
 
