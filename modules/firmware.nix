@@ -15,4 +15,5 @@ in
   runCommand "qcom-laptops-firmware" {} ''
     mkdir -p $out/lib/firmware
     cp -vr ${slim5x}/lib/firmware/qcom $out/lib/firmware/
+    ls -la $out/lib/firmware/qcom
   ''

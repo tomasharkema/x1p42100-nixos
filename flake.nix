@@ -2,7 +2,7 @@
   description = "Minimal NixOS installation media";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    hyprland.url = "github:hyprwm/Hyprland";
+    # hyprland.url = "github:hyprwm/Hyprland";
   };
   outputs = {
     self,
@@ -10,29 +10,38 @@
     ...
   } @ inputs: let
     pkgs-unpatched = nixpkgs.legacyPackages.aarch64-linux;
-    nixpkgs-patched =
-      (pkgs-unpatched.applyPatches {
-        name = "nixpkgs-patched";
-        src = nixpkgs;
-        patches = [
-          (pkgs-unpatched.fetchpatch {
-            url = "https://github.com/NixOS/nixpkgs/commit/de1fdb6310af8f70c98746ba4550dc2799a03621.patch";
-            hash = "sha256-brqJxblmqWFAk8JgxmxXeHoiaWiQtsCsOzht/WlH5eE=";
-          })
-          ./nixpkgs-efi-shell.patch
-        ];
-      }).overrideAttrs
-      {allowSubstitutes = true;};
+    # nixpkgs-patched =
+    #   (pkgs-unpatched.applyPatches {
+    #     name = "nixpkgs-patched";
+    #     src = nixpkgs;
+    #     patches = [
+    #       (pkgs-unpatched.fetchpatch {
+    #         url = "https://github.com/NixOS/nixpkgs/commit/de1fdb6310af8f70c98746ba4550dc2799a03621.patch";
+    #         hash = "sha256-brqJxblmqWFAk8JgxmxXeHoiaWiQtsCsOzht/WlH5eE=";
+    #       })
+    #       ./nixpkgs-efi-shell.patch
+    #     ];
+    #   }).overrideAttrs
+    #   {allowSubstitutes = true;};
   in {
     nixosModules = {
       qcom-fw = ./modules/firmware.nix;
       x1p = ./modules/x1p42100.nix;
     };
+    packages."aarch64-linux".stubble = let
+      # pkgs = import nixpkgs-patched {
+      #   system = "aarch64-linux";
+      # };
+    in
+      #pkgs
+      pkgs-unpatched.callPackage ./packages/stubble.nix {};
     nixosConfigurations = {
       slim5xISO = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs;};
         system = "aarch64-linux";
         modules = [
-          "${nixpkgs-patched}/nixos/modules/installer/cd-dvd/installation-cd-graphical-gnome.nix"
+          "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-graphical-gnome.nix"
+          #"${nixpkgs-patched}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
           ./iso.nix
           ./modules/x1p42100.nix
           {
