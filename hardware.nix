@@ -3,8 +3,7 @@
   pkgs,
   lib,
   ...
-}:
-{
+}: {
   # Ucomment the lines below for use in a flake config
 
   # imports = [
@@ -25,12 +24,14 @@
     };
   };
 
-  #hardware.enableRedistributableFirmware = true;
-  hardware.firmware = with pkgs; [
-    linux-firmware
-    wireless-regdb
-    (pkgs.callPackage ./modules/firmware.nix { })
-  ];
+  hardware = {
+    enableRedistributableFirmware = true;
+    firmware = with pkgs; [
+      linux-firmware
+      wireless-regdb
+      (pkgs.callPackage ./modules/firmware.nix {})
+    ];
+  };
 
   fileSystems = {
     "/" = {

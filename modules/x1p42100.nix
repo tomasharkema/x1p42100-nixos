@@ -4,9 +4,12 @@
   lib,
   ...
 }: {
-  hardware.deviceTree = {
-    enable = true;
-    name = "x1p42100-microsoft-sp12.dtb";
+  hardware = {
+    deviceTree = {
+      enable = true;
+      name = "qcom/x1p42100-microsoft-sp12.dtb";
+    };
+    enableRedistributableFirmware = true;
   };
 
   systemd.tpm2.enable = false;
@@ -40,15 +43,15 @@
         "nvme"
         "f2fs"
       ];
-      extraFirmwarePaths = [
-        "qcom/gen71500_sqe.fw.zst"
-        "qcom/gen71500_gmu.bin.zst"
-        "qcom/gen71500_zap.mbn.zst"
-        "qcom/x1p42100/qcadsp8380.mbn"
-        "qcom/x1p42100/qccdsp8380.mbn"
-        "qcom/x1p42100/qcdxkmsuc8380.mbn"
-        "qcom/x1p42100/qcdxkmsucpurwa.mbn"
-      ];
+      # extraFirmwarePaths = [
+      #   "qcom/gen71500_sqe.fw.zst"
+      #   "qcom/gen71500_gmu.bin.zst"
+      #   "qcom/gen71500_zap.mbn.zst"
+      #   "qcom/x1p42100/qcadsp8380.mbn"
+      #   "qcom/x1p42100/qccdsp8380.mbn"
+      #   "qcom/x1p42100/qcdxkmsuc8380.mbn"
+      #   "qcom/x1p42100/qcdxkmsucpurwa.mbn"
+      # ];
     };
 
     kernelParams = [
