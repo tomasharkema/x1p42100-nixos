@@ -25,7 +25,7 @@
         "phy_snps_eusb2"
         "phy_qcom_eusb2_repeater"
         "tcsrcc_x1e80100"
-
+        "ext4"
         "i2c_hid_of"
         "i2c_qcom_geni"
         "dispcc-x1e80100"
@@ -40,8 +40,10 @@
         "ps883x"
         "pmic_glink_altmode"
         "qrtr"
-      ];
+"ufs_qcom" "phy_qcom_qmp_ufs"      ];
       kernelModules = [
+        
+        # "ufshcd_qcom"
         "nvme"
         "f2fs"
         "usb_storage"

@@ -109,12 +109,15 @@
     loader = {
       systemd-boot.enable = true;
     };
-  };
+  
+initrd = {
+};
+};
 
   fileSystems = {
     "/" = {
       device = "/dev/disk/by-label/nixos";
-      autoResize = true;
+      
       fsType = "ext4";
     };
     "/boot" = {
