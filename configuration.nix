@@ -8,7 +8,7 @@
   users.users = {
     root.initialPassword = "root";
 
-    user = {
+    nixos = {
       isNormalUser = true;
       initialPassword = "arm";
       extraGroups = [
@@ -24,16 +24,40 @@
     git
   ];
 
-  networking.hostName = "qcom-nixos";
-  networking.networkmanager = {
-    enable = true;
-    plugins = [];
+  networking = {
+    hostName = "qcom-nixos";
+
+    wireless = {
+      enable = false; # true;
+      iwd = {
+        enable = true;
+        settings = {
+          Settings = {
+            AutoConnect = true;
+            AlwaysRandomizeAddress = true;
+          };
+          Network = {
+            EnableIPv6 = true;
+            RoutePriorityOffset = 300;
+          };
+          DriverQuirks.DefaultInterface = "wlan0";
+        };
+      };
+    };
+
+    networkmanager = {
+      enable = true;
+
+      wifi = {
+        backend = "iwd";
+      };
+    };
   };
 
   hardware.bluetooth.enable = true;
 
   programs = {
-    #    firefox.enable = true;
+    firefox.enable = true;
     # hyprland = {
     #   enable = true;
     #   package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
@@ -44,7 +68,7 @@
 
   services.openssh.enable = true;
 
-  boot.plymouth.enable = true;
+  # boot.plymouth.enable = true;
 
   services.xserver.enable = true;
   services.desktopManager.gnome = {
@@ -72,6 +96,29 @@
       "nix-command"
       "flakes"
     ];
+  };
+
+  boot = {
+    growPartition = false;
+    loader = {
+      systemd-boot.enable = lib.mkForce false;
+      grub = {
+        enable = true;
+        devices = lib.mkDefault ["/dev/vda"];
+      };
+    };
+  };
+
+  fileSystems = {
+    "/" = {
+      device = "/dev/disk/by-label/nixos";
+      autoResize = true;
+      fsType = "ext4";
+    };
+    "/boot" = {
+      device = "/dev/disk/by-label/ESP";
+      fsType = "vfat";
+    };
   };
 
   system.stateVersion = "26.05";

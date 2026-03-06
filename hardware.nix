@@ -11,14 +11,26 @@
   # ];
 
   boot = {
+    # consoleLogLevel = 9;
+    kernelParams = [
+      # "debug"
+      # "nohibernate"
+      # "udev.log_level=7"
+      # "rd.systemd.debug_shell"
+      # "console=tty0"
+    ];
     loader = {
       efi.canTouchEfiVariables = true;
       systemd-boot = {
-        enable = lib.mkForce false; # true;
+        enable = true;
+        # enable = lib.mkForce false; # true;
         configurationLimit = 2;
       };
-      refind.enable = true;
-      grub.enable = lib.mkForce false;
+      # refind.enable = true;
+      # grub = {
+      #   enable = lib.mkForce true;
+      #   device = "/dev/disk/by-label/ESP";
+      # };
     };
     initrd = {
       enable = true;

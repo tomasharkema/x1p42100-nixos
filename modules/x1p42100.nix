@@ -9,11 +9,13 @@
       enable = true;
       name = "qcom/x1p42100-microsoft-sp12.dtb";
     };
+    enableAllFirmware = true;
     enableRedistributableFirmware = true;
   };
 
   systemd.tpm2.enable = false;
   boot = {
+    hardwareScan = true;
     initrd = {
       systemd.tpm2.enable = false;
       availableKernelModules = [
@@ -33,7 +35,7 @@
         "msm"
         "nvme"
         "phy_qcom_qmp_pcie"
-
+        "uas"
         # Needed with the DP altmode patches
         "ps883x"
         "pmic_glink_altmode"
@@ -42,6 +44,11 @@
       kernelModules = [
         "nvme"
         "f2fs"
+        "usb_storage"
+        "phy_qcom_qmp_combo"
+        "phy_snps_eusb2"
+        "phy_qcom_eusb2_repeater"
+        "uas"
       ];
       extraFirmwarePaths = [
         "qcom/gen71500_sqe.fw.zst"
