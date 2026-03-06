@@ -5,6 +5,7 @@
   ...
 }: {
   imports = [./hardware.nix];
+  nixpkgs.config.allowUnfree = true;
   users.users = {
     root.initialPassword = "root";
 
@@ -73,6 +74,16 @@
   services.xserver.enable = true;
   services.desktopManager.gnome = {
     enable = true;
+  };
+  services.flatpak = {
+    enable = true;
+
+    remotes = [
+      {
+        name = "flathub";
+        location = "https://dl.flathub.org/repo/flathub.flatpakrepo";
+      }
+    ];
   };
 
   services.displayManager.gdm = {
