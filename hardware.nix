@@ -32,15 +32,4 @@
       (pkgs.callPackage ./modules/firmware.nix {})
     ];
   };
-
-  fileSystems = {
-    "/" = {
-      device = "/dev/disk/by-label/root";
-      fsType = "ext4";
-    };
-    "/boot" = {
-      device = "/dev/disk/by-label/SYSTEM_DRV";
-      fsType = "vfat";
-    };
-  };
 }
