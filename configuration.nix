@@ -78,12 +78,12 @@
   services.flatpak = {
     enable = true;
 
-    remotes = [
-      {
-        name = "flathub";
-        location = "https://dl.flathub.org/repo/flathub.flatpakrepo";
-      }
-    ];
+    # remotes = [
+    #   {
+    #     name = "flathub";
+    #     location = "https://dl.flathub.org/repo/flathub.flatpakrepo";
+    #   }
+    # ];
   };
 
   services.displayManager.gdm = {
@@ -97,11 +97,6 @@
     autoSuspend = false;
   };
 
-  services.displayManager.autoLogin = {
-    enable = true;
-    user = "nixos";
-  };
-
   nix = {
     settings.experimental-features = [
       "nix-command"
@@ -112,11 +107,7 @@
   boot = {
     growPartition = false;
     loader = {
-      systemd-boot.enable = lib.mkForce false;
-      grub = {
-        enable = true;
-        devices = lib.mkDefault ["/dev/vda"];
-      };
+      systemd-boot.enable = true;
     };
   };
 
