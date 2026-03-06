@@ -14,9 +14,11 @@
     loader = {
       efi.canTouchEfiVariables = true;
       systemd-boot = {
-        enable = true;
+        enable = lib.mkForce false; # true;
         configurationLimit = 2;
       };
+      refind.enable = true;
+      grub.enable = lib.mkForce false;
     };
     initrd = {
       enable = true;
