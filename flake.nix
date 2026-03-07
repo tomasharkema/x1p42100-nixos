@@ -3,10 +3,12 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     # hyprland.url = "github:hyprwm/Hyprland";
+
+
   };
   outputs = {
     self,
-    nixpkgs,
+    nixpkgs, 
     ...
   } @ inputs: let
     pkgs-unpatched = nixpkgs.legacyPackages.aarch64-linux;
@@ -68,7 +70,7 @@
           }
         ];
       };
-      slim5xSystem = nixpkgs.lib.nixosSystem {
+      qcom-nixos = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         system = "aarch64-linux";
         modules = [

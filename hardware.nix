@@ -43,7 +43,8 @@
     firmware = with pkgs; [
       linux-firmware
       wireless-regdb
-      (pkgs.callPackage ./modules/firmware.nix {})
+      
+       (pkgs.callPackage ./modules/firmware.nix {})
     ];
   };
 }
