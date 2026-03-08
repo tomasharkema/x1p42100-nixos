@@ -3,7 +3,9 @@
   pkgs,
   lib,
   ...
-}: {
+}: let
+  firm = pkgs.callPackage ./modules/firmware.nix {};
+in {
   # Ucomment the lines below for use in a flake config
 
   # imports = [
@@ -38,13 +40,18 @@
     };
   };
 
+  environment = {
+    systemPackages = [firm];
+
+    pathsToLink = ["/share/alsa"];
+  };
   hardware = {
     enableRedistributableFirmware = true;
     firmware = with pkgs; [
       linux-firmware
       wireless-regdb
-      
-       (pkgs.callPackage ./modules/firmware.nix {})
+
+      firm
     ];
   };
 }
