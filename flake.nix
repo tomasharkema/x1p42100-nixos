@@ -3,12 +3,10 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     # hyprland.url = "github:hyprwm/Hyprland";
-
-
   };
   outputs = {
     self,
-    nixpkgs, 
+    nixpkgs,
     ...
   } @ inputs: let
     pkgs-unpatched = nixpkgs.legacyPackages.aarch64-linux;

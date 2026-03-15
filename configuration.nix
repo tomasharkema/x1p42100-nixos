@@ -2,78 +2,96 @@
   inputs,
   pkgs,
   lib,
-config,  ...
+  config,
+  ...
 }: {
   imports = [./hardware.nix];
   nixpkgs.config.allowUnfree = true;
-  
-nixpkgs.overlays = [
-  (self: super: {
-    ccacheWrapper = super.ccacheWrapper.override {
-      extraConfig = ''
-        export CCACHE_COMPRESS=1
-        export CCACHE_DIR="${config.programs.ccache.cacheDir}"
-        export CCACHE_UMASK=007
-        export CCACHE_SLOPPINESS=random_seed
-        if [ ! -d "$CCACHE_DIR" ]; then
-          echo "====="
-          echo "Directory '$CCACHE_DIR' does not exist"
-          echo "Please create it with:"
-          echo "  sudo mkdir -m0770 '$CCACHE_DIR'"
-          echo "  sudo chown root:nixbld '$CCACHE_DIR'"
-          echo "====="
-          exit 1
-        fi
-        if [ ! -w "$CCACHE_DIR" ]; then
-          echo "====="
-          echo "Directory '$CCACHE_DIR' is not accessible for user $(whoami)"
-          echo "Please verify its access permissions"
-          echo "====="
-          exit 1
-        fi
-      '';
-    };
-  })
-];
 
+  nixpkgs.overlays = [
+    (self: super: {
+      ccacheWrapper = super.ccacheWrapper.override {
+        extraConfig = ''
+          export CCACHE_COMPRESS=1
+          export CCACHE_DIR="${config.programs.ccache.cacheDir}"
+          export CCACHE_UMASK=007
+          export CCACHE_SLOPPINESS=random_seed
+          # export CCACHE_REMOTE_STORAGE=file:/mnt/cache/ccache
+          if [ ! -d "$CCACHE_DIR" ]; then
+            echo "====="
+            echo "Directory '$CCACHE_DIR' does not exist"
+            echo "Please create it with:"
+            echo "  sudo mkdir -m0770 '$CCACHE_DIR'"
+            echo "  sudo chown root:nixbld '$CCACHE_DIR'"
+            echo "====="
+            exit 1
+          fi
+          if [ ! -w "$CCACHE_DIR" ]; then
+            echo "====="
+            echo "Directory '$CCACHE_DIR' is not accessible for user $(whoami)"
+            echo "Please verify its access permissions"
+            echo "====="
+            exit 1
+          fi
+        '';
+      };
+    })
+  ];
 
   nix.settings = {
-    auto-optimise-store=true;
+    auto-optimise-store = true;
 
-extra-sandbox-paths = [ config.programs.ccache.cacheDir ];
-
+    extra-sandbox-paths = [config.programs.ccache.cacheDir];
   };
 
-services.fwupd.enable=true;
+  services.fwupd.enable = true;
   users.users = {
     root.initialPassword = "root";
 
-    nixos = {
+    tomas= {
       isNormalUser = true;
       initialPassword = "arm";
       extraGroups = [
         "wheel"
         "networkmanager"
       ];
+      shell = pkgs.zsh;
+      uid=1000;
     };
   };
 
-programs.ccache.enable = true;
+  programs.ccache.enable = true;
 
   environment.systemPackages = with pkgs; [
-    kitty vscode direnv alejandra wget2 
+    kitty
+    vscode
+    direnv
+    alejandra
+wget2
     wofi
     neovim
-    git gnome-firmware
-  htop btop bottom usbutils lshw  pciutils
-  sbctl mission-center  firmware-manager firmware-updater
-            ];
+    git pv
+    gnome-firmware
+    htop
+    btop
+    bottom zsh
+    usbutils
+    lshw
+    pciutils
+    sbctl
+    mission-center
+    firmware-manager
+    firmware-updater
+    nil
+    nom gparted
+    jetbrains-toolbox
+  ];
+programs.zsh.enable=true;
+  services.pcscd.enable = true;
+  services.tailscale.enable=true;
 
-        
-           
-            
 
-programs.dconf.profiles.user.databases = [
+  programs.dconf.profiles.nixos.databases = lib.mkIf false [
     {
       settings = {
         "org/gnome/mutter" = {
@@ -88,8 +106,7 @@ programs.dconf.profiles.user.databases = [
     }
   ];
 
-
-# rtkit (optional, recommended) allows Pipewire to use the realtime scheduler for increased performance.
+  # rtkit (optional, recommended) allows Pipewire to use the realtime scheduler for increased performance.
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true; # if not already enabled
@@ -99,8 +116,6 @@ programs.dconf.profiles.user.databases = [
     # If you want to use JACK applications, uncomment the following
     #jack.enable = true;
   };
-
-
 
   networking = {
     hostName = "qcom-nixos";
@@ -148,7 +163,15 @@ programs.dconf.profiles.user.databases = [
 
   #  boot.plymouth.enable = true;
 
-  services.xserver.enable = true;
+  services.xserver = {
+    enable = true;
+
+    videoDrivers = [
+      "modesetting"
+      "fbdev"
+      #"displaylink"
+    ];
+  };
   services.desktopManager.gnome = {
     enable = true;
   };
@@ -181,20 +204,27 @@ programs.dconf.profiles.user.databases = [
     ];
   };
 
+  services.rpcbind.enable = true;
+
   boot = {
     growPartition = false;
     loader = {
-       systemd-boot.enable = true;
+      systemd-boot={
+        enable = true;
+    configurationLimit = 5;
+    
+    };};
+
+    supportedFilesystems = ["nfs" "ntfs"];
+
+    initrd = {
     };
-  
-initrd = {
-};
-};
+  };
 
   fileSystems = {
     "/" = {
       device = "/dev/disk/by-label/nixos";
-      
+
       fsType = "ext4";
     };
     "/boot" = {

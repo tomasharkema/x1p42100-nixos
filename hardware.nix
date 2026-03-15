@@ -26,7 +26,7 @@ in {
       systemd-boot = {
         enable = true;
         # enable = lib.mkForce false; # true;
-        configurationLimit = 2;
+        # configurationLimit = 2;
       };
       # refind.enable = true;
       # grub = {

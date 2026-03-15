@@ -40,9 +40,10 @@
         "ps883x"
         "pmic_glink_altmode"
         "qrtr"
-"ufs_qcom" "phy_qcom_qmp_ufs"      ];
+        "ufs_qcom"
+        "phy_qcom_qmp_ufs"
+      ];
       kernelModules = [
-        
         # "ufshcd_qcom"
         "nvme"
         "f2fs"
