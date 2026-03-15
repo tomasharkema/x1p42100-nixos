@@ -33,7 +33,7 @@ linuxPackagesFor ((buildLinux {
     owner = "jglathe";
     repo = "linux_ms_dev_kit";
     rev = "jg/sp12_dt";
-    hash = "sha256-dcS5AHP40Saz21ZilNFYX4WtgYf404z+setpywvsop";
+    hash = "sha256-dcS5AHP40Saz21ZilNFYX4WtgYf404z+setpywvsopw=";
   };
 })
 
