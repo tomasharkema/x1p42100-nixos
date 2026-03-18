@@ -37,4 +37,5 @@ linuxPackagesFor ((buildLinux {
   };
 })
 
-.override {stdenv = ccacheStdenv;})
+.override {stdenv = ccacheStdenv;}
+)
