@@ -4,6 +4,14 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     # hyprland.url = "github:hyprwm/Hyprland";
   };
+  nixConfig = {
+    extra-trusted-substituters = [
+      "http://silver-star.ling-lizard.ts.net:7124"
+    ];
+    extra-trusted-public-keys = [
+      "tomas-nixos-1:attQnEt6Gq99mwz5J/h8EVhCpavuB0/z/u0Bt/Mko7E="
+    ];
+  };
   outputs = {
     self,
     nixpkgs,

@@ -16,7 +16,7 @@ in {
     # consoleLogLevel = 9;
     kernelParams = [
       # "debug"
-      # "nohibernate"
+      "nohibernate"
       # "udev.log_level=7"
       # "rd.systemd.debug_shell"
       # "console=tty0"
@@ -42,15 +42,14 @@ in {
 
   environment = {
     systemPackages = [firm];
-
     pathsToLink = ["/share/alsa"];
   };
+
   hardware = {
     enableRedistributableFirmware = true;
     firmware = with pkgs; [
       linux-firmware
       wireless-regdb
-
       firm
     ];
   };

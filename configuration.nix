@@ -16,7 +16,7 @@
           export CCACHE_DIR="${config.programs.ccache.cacheDir}"
           export CCACHE_UMASK=007
           export CCACHE_SLOPPINESS=random_seed
-          # export CCACHE_REMOTE_STORAGE=file:/mnt/cache/ccache
+          export CCACHE_REMOTE_STORAGE=file:/mnt/cache/ccache
           if [ ! -d "$CCACHE_DIR" ]; then
             echo "====="
             echo "Directory '$CCACHE_DIR' does not exist"
@@ -45,10 +45,11 @@
   };
 
   services.fwupd.enable = true;
+
   users.users = {
     root.initialPassword = "root";
 
-    tomas= {
+    tomas = {
       isNormalUser = true;
       initialPassword = "arm";
       extraGroups = [
@@ -56,25 +57,34 @@
         "networkmanager"
       ];
       shell = pkgs.zsh;
-      uid=1000;
+      uid = 1000;
     };
   };
 
   programs.ccache.enable = true;
 
+  fileSystems."/mnt/cache" = {
+    device = "192.168.1.102:/volume1/cache";
+    fsType = "nfs";
+  };
+
   environment.systemPackages = with pkgs; [
+    ncdu
+    gdu
     kitty
     vscode
     direnv
     alejandra
-wget2
+    wget2
     wofi
     neovim
-    git pv
+    git
+    pv
     gnome-firmware
     htop
     btop
-    bottom zsh
+    bottom
+    zsh
     usbutils
     lshw
     pciutils
@@ -83,13 +93,13 @@ wget2
     firmware-manager
     firmware-updater
     nil
-    nom gparted
+    nom
+    gparted
     jetbrains-toolbox
   ];
-programs.zsh.enable=true;
+  programs.zsh.enable = true;
   services.pcscd.enable = true;
-  services.tailscale.enable=true;
-
+  services.tailscale.enable = true;
 
   programs.dconf.profiles.nixos.databases = lib.mkIf false [
     {
@@ -161,7 +171,7 @@ programs.zsh.enable=true;
 
   services.openssh.enable = true;
 
-  #  boot.plymouth.enable = true;
+  boot.plymouth.enable = true;
 
   services.xserver = {
     enable = true;
@@ -169,12 +179,17 @@ programs.zsh.enable=true;
     videoDrivers = [
       "modesetting"
       "fbdev"
-      #"displaylink"
+      "displaylink"
     ];
   };
-  services.desktopManager.gnome = {
-    enable = true;
+
+  services.desktopManager = {
+    cosmic.enable = true;
+    gnome = {
+      enable = true;
+    };
   };
+
   services.flatpak = {
     enable = true;
 
@@ -198,22 +213,31 @@ programs.zsh.enable=true;
   };
 
   nix = {
-    settings.experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
+    settings = {
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      trusted-users = [
+        "root"
+        "tomas"
+      ];
+    };
   };
-
+  services.hardware.bolt.enable = true;
   services.rpcbind.enable = true;
 
   boot = {
     growPartition = false;
     loader = {
-      systemd-boot={
+      systemd-boot = {
         enable = true;
-    configurationLimit = 5;
-    
-    };};
+        configurationLimit = 5;
+        netbootxyz.enable = true;
+        edk2-uefi-shell.enable = true;
+        consoleMode = "max";
+      };
+    };
 
     supportedFilesystems = ["nfs" "ntfs"];
 
@@ -224,12 +248,15 @@ programs.zsh.enable=true;
   fileSystems = {
     "/" = {
       device = "/dev/disk/by-label/nixos";
-
       fsType = "ext4";
     };
     "/boot" = {
       device = "/dev/disk/by-label/ESP";
       fsType = "vfat";
+      options = [
+        "fmask=0177"
+        "dmask=0077"
+      ];
     };
   };
 
