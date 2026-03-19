@@ -16,7 +16,9 @@
           export CCACHE_DIR="${config.programs.ccache.cacheDir}"
           export CCACHE_UMASK=007
           export CCACHE_SLOPPINESS=random_seed
-          export CCACHE_REMOTE_STORAGE=file:/mnt/cache/ccache
+          export CCACHE_RESHARE=1          
+          export CCACHE_REMOTE_STORAGE=file:///mnt/cache/ccache
+          
           if [ ! -d "$CCACHE_DIR" ]; then
             echo "====="
             echo "Directory '$CCACHE_DIR' does not exist"
@@ -66,7 +68,10 @@
   fileSystems."/mnt/cache" = {
     device = "192.168.1.102:/volume1/cache";
     fsType = "nfs";
-  };
+    options = [ "x-systemd.automount" "noauto" 
+"x-systemd.idle-timeout=600"
+];
+};
 
   environment.systemPackages = with pkgs; [
     ncdu
@@ -97,6 +102,7 @@
     gparted
     jetbrains-toolbox
   ];
+
   programs.zsh.enable = true;
   services.pcscd.enable = true;
   services.tailscale.enable = true;
@@ -184,7 +190,7 @@
   };
 
   services.desktopManager = {
-    cosmic.enable = true;
+    # cosmic.enable = true;
     gnome = {
       enable = true;
     };
@@ -224,7 +230,9 @@
       ];
     };
   };
-  services.hardware.bolt.enable = true;
+
+  # services.hardware.bolt.enable = true;
+  
   services.rpcbind.enable = true;
 
   boot = {
