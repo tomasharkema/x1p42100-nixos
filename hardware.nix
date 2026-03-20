@@ -16,7 +16,7 @@ in {
     # consoleLogLevel = 9;
     kernelParams = [
       # "debug"
-      # "nohibernate"
+      "nohibernate"
       # "udev.log_level=7"
       # "rd.systemd.debug_shell"
       # "console=tty0"
@@ -50,7 +50,7 @@ in {
     firmware = with pkgs; [
       linux-firmware
       wireless-regdb
-      firm
+      #firm
     ];
   };
 }

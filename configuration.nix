@@ -16,9 +16,10 @@
           export CCACHE_DIR="${config.programs.ccache.cacheDir}"
           export CCACHE_UMASK=007
           export CCACHE_SLOPPINESS=random_seed
-          export CCACHE_RESHARE=1          
-          export CCACHE_REMOTE_STORAGE=file:///mnt/cache/ccache
-          
+          export CCACHE_MAXSIZE=20GB
+          export CCACHE_RESHARE=1
+          export CCACHE_REMOTE_STORAGE=file:/mnt/cache/ccache
+
           if [ ! -d "$CCACHE_DIR" ]; then
             echo "====="
             echo "Directory '$CCACHE_DIR' does not exist"
@@ -65,14 +66,6 @@
 
   programs.ccache.enable = true;
 
-  fileSystems."/mnt/cache" = {
-    device = "192.168.1.102:/volume1/cache";
-    fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" 
-"x-systemd.idle-timeout=600"
-];
-};
-
   environment.systemPackages = with pkgs; [
     ncdu
     gdu
@@ -100,7 +93,6 @@
     nil
     nom
     gparted
-    jetbrains-toolbox
   ];
 
   programs.zsh.enable = true;
@@ -231,8 +223,8 @@
     };
   };
 
-  # services.hardware.bolt.enable = true;
-  
+  services.hardware.bolt.enable = true;
+
   services.rpcbind.enable = true;
 
   boot = {
@@ -247,7 +239,11 @@
       };
     };
 
-    supportedFilesystems = ["nfs" "ntfs"];
+    supportedFilesystems = {
+      nfs = true;
+      ntfs = true;
+      btrfs = true;
+    };
 
     initrd = {
     };
@@ -264,6 +260,16 @@
       options = [
         "fmask=0177"
         "dmask=0077"
+      ];
+    };
+
+    "/mnt/cache" = {
+      device = "192.168.1.102:/volume1/cache";
+      fsType = "nfs";
+      options = [
+        "x-systemd.automount"
+        "noauto"
+        "x-systemd.idle-timeout=600"
       ];
     };
   };

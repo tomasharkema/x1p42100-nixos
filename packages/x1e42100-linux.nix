@@ -6,7 +6,7 @@
   ccacheStdenv,
   ...
 }:
-# linuxPackagesFor (buildLinux {
+# linuxPackagesFor ( (buildLinux {
 #   version = "6.19";
 #   src = fetchFromGitHub {
 #     owner = "jglathe";

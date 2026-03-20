@@ -15,7 +15,7 @@
 
   systemd.tpm2.enable = false;
   boot = {
-    # hardwareScan = true;
+    hardwareScan = true;
     initrd = {
       systemd.tpm2.enable = false;
       availableKernelModules = [
@@ -67,7 +67,7 @@
     kernelParams = [
       "pd_ignore_unused"
       "clk_ignore_unused"
-      "efi=noruntime"
+      #"efi=noruntime"
       #"console=tty1"
     ];
 
