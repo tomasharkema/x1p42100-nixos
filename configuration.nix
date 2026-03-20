@@ -56,7 +56,12 @@
       isNormalUser = true;
       initialPassword = "arm";
       extraGroups = [
-        "wheel"
+        "wheel" 
+
+
+
+
+"dialout"
         "networkmanager"
       ];
       shell = pkgs.zsh;
@@ -67,6 +72,8 @@
   programs.ccache.enable = true;
 
   environment.systemPackages = with pkgs; [
+    _1password-gui
+    chromium
     ncdu
     gdu
     kitty
@@ -177,7 +184,7 @@
     videoDrivers = [
       "modesetting"
       "fbdev"
-      "displaylink"
+      # "displaylink"
     ];
   };
 
