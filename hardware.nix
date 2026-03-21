@@ -4,7 +4,7 @@
   lib,
   ...
 }: let
-  firm = pkgs.callPackage ./modules/firmware.nix {};
+  firm = pkgs.callPackage ./packages/firmware.nix {};
 in {
   # Ucomment the lines below for use in a flake config
 
@@ -16,7 +16,7 @@ in {
     # consoleLogLevel = 9;
     kernelParams = [
       # "debug"
-      "nohibernate"
+      # "nohibernate"
       # "udev.log_level=7"
       # "rd.systemd.debug_shell"
       # "console=tty0"
@@ -50,7 +50,7 @@ in {
     firmware = with pkgs; [
       linux-firmware
       wireless-regdb
-      #firm
+      firm
     ];
   };
 }

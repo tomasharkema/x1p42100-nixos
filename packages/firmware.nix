@@ -1,0 +1,43 @@
+{ python3, stdenv, cabextract, rsync, fetchurl, fetchFromGitHub, linux-firmware }:
+
+stdenv.mkDerivation (finalAttrs: {
+  pname = "surface-firmware";
+  version = "200.0.32.0";
+  commit = "30e823d85c1fb4e410a4afdf9cd2285914ee712d";
+
+  sp12 = fetchFromGitHub {
+    owner = "harrisonvanderbyl";
+    repo = "surface-pro-12-inch-linux";
+    rev = "4010ca49e14b4b1964e306c51fb9428c2ef79a7c";
+    hash = "sha256-+dO+/iEABRq1lmtJmln/X7B/s7AlDkMwEUlzzXhQYO4=";
+  };
+
+
+  board-2 = "${linux-firmware}/lib/firmware/ath12k/WCN7850/hw2.0/board-2.bin";
+
+  bdencoder = fetchurl {
+    url = "https://raw.githubusercontent.com/qca/qca-swiss-army-knife/f2164085920540f4ecbfa0b12959918c601724b6/tools/scripts/ath12k/ath12k-bdencoder";
+    hash = "sha256-hzn/GVo7nZmuBpuBsEZUcf928w03cgANq+kaUlGmeYA=";
+  };
+
+  nativeBuildInputs = [
+    cabextract
+    rsync
+    python3
+  ];
+
+  buildCommand = ''
+    mkdir -p $out/lib/firmware
+    cp -vr ${finalAttrs.sp12}/lib/firmware/qcom $out/lib/firmware/
+
+    mkdir -p $out/share
+    cp -vr ${finalAttrs.sp12}/usr/share/alsa $out/share
+
+    mkdir -p $out/lib/firmware/ath12k/WCN7850/hw2.0
+
+    python3 ${finalAttrs.bdencoder} --extract ${finalAttrs.board-2}
+    mv "bus=pci,vendor=17cb,device=1107,subsystem-vendor=17cb,subsystem-device=3378,qmi-chip-id=2,qmi-board-id=255.bin" $out/lib/firmware/ath12k/WCN7850/hw2.0/board.bin
+
+    find "$out" -exec touch --date=2000-01-01 {} +
+  '';
+})

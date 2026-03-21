@@ -56,12 +56,9 @@
       isNormalUser = true;
       initialPassword = "arm";
       extraGroups = [
-        "wheel" 
+        "wheel"
 
-
-
-
-"dialout"
+        "dialout"
         "networkmanager"
       ];
       shell = pkgs.zsh;
@@ -70,6 +67,7 @@
   };
 
   programs.ccache.enable = true;
+  environment.shells = [pkgs.zsh];
 
   environment.systemPackages = with pkgs; [
     _1password-gui
@@ -99,16 +97,40 @@
     firmware-updater
     nil
     nom
+    squashfsTools
+    squashfs-tools-ng
     gparted
+    apple-cursor
+    gnome-tweaks
+    refine
   ];
-
+  hardware.sensor.iio.enable = true;
   programs.zsh.enable = true;
   services.pcscd.enable = true;
   services.tailscale.enable = true;
+  fonts = {
+    fontDir.enable=true;
+    packages = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk-sans
+      noto-fonts-color-emoji
+      liberation_ttf
 
-  programs.dconf.profiles.nixos.databases = lib.mkIf false [
+      mplus-outline-fonts.githubRelease
+      dina-font
+      proggyfonts
+      nerd-fonts.fira-code
+      nerd-fonts.jetbrains-mono nerd-fonts.adwaita-mono
+      adwaita-fonts
+    ];
+  };
+  programs.dconf.profiles.tomas.databases = [
     {
       settings = {
+        "org/gnome/desktop/interface" = {
+          accent-color = "purple";
+        };
+
         "org/gnome/mutter" = {
           experimental-features = [
             "scale-monitor-framebuffer" # Enables fractional scaling (125% 150% 175%)
@@ -139,7 +161,7 @@
       enable = false; # true;
       iwd = {
         enable = true;
-        settings = {
+        settings = {General.ControlPortOverNL80211 = false;
           Settings = {
             AutoConnect = true;
             AlwaysRandomizeAddress = true;
@@ -239,7 +261,7 @@
     loader = {
       systemd-boot = {
         enable = true;
-        configurationLimit = 5;
+        configurationLimit = 3;
         netbootxyz.enable = true;
         edk2-uefi-shell.enable = true;
         consoleMode = "max";
@@ -269,7 +291,6 @@
         "dmask=0077"
       ];
     };
-
     "/mnt/cache" = {
       device = "192.168.1.102:/volume1/cache";
       fsType = "nfs";

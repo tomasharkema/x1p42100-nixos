@@ -25,7 +25,7 @@
         "phy_snps_eusb2"
         "phy_qcom_eusb2_repeater"
         "tcsrcc_x1e80100"
-        "ext4"
+        "ext4" "btrfs"
         "i2c_hid_of"
         "i2c_qcom_geni"
         "dispcc-x1e80100"
