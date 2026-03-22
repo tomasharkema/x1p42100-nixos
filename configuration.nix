@@ -4,11 +4,13 @@
   lib,
   config,
   ...
-}: let
-  slbounce = pkgs.callPackage ./packages/slbounce.nix {};
-  qebspil = pkgs.callPackage ./packages/qebspil.nix {};
-in {
-  imports = [./hardware.nix];
+}:
+let
+  slbounce = pkgs.callPackage ./packages/slbounce.nix { };
+  qebspil = pkgs.callPackage ./packages/qebspil.nix { };
+in
+{
+  imports = [ ./hardware.nix ];
   nixpkgs.config.allowUnfree = true;
 
   nixpkgs.overlays = [
@@ -47,7 +49,16 @@ in {
   nix.settings = {
     auto-optimise-store = true;
 
-    extra-sandbox-paths = [config.programs.ccache.cacheDir];
+    extra-sandbox-paths = [ config.programs.ccache.cacheDir ];
+
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+    trusted-users = [
+      "root"
+      "tomas"
+    ];
   };
 
   services.fwupd.enable = true;
@@ -70,12 +81,15 @@ in {
   };
 
   programs.ccache.enable = true;
-  environment.shells = [pkgs.zsh];
+  programs.geary.enable = true;
+  environment.shells = [ pkgs.zsh ];
 
   environment.systemPackages = with pkgs; [
     _1password-gui
     chromium
+    zed-editor
     ncdu
+    helix
     gdu
     kitty
     fzf
@@ -101,6 +115,7 @@ in {
     firmware-manager
     firmware-updater
     nil
+    nixd
     nom
     tio
     hw-probe
@@ -247,19 +262,6 @@ in {
     # * https://github.com/NixOS/nixpkgs/pull/63790
     # * https://gitlab.gnome.org/GNOME/gnome-control-center/issues/22
     autoSuspend = false;
-  };
-
-  nix = {
-    settings = {
-      experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
-      trusted-users = [
-        "root"
-        "tomas"
-      ];
-    };
   };
 
   services.hardware.bolt.enable = true;
