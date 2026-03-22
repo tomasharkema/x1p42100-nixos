@@ -4,13 +4,11 @@
   lib,
   config,
   ...
-}:
-let
-  slbounce = pkgs.callPackage ./packages/slbounce.nix { };
-  qebspil = pkgs.callPackage ./packages/qebspil.nix { };
-in
-{
-  imports = [ ./hardware.nix ];
+}: let
+  slbounce = pkgs.callPackage ./packages/slbounce.nix {};
+  qebspil = pkgs.callPackage ./packages/qebspil.nix {};
+in {
+  imports = [./hardware.nix];
   nixpkgs.config.allowUnfree = true;
 
   nixpkgs.overlays = [
@@ -49,7 +47,7 @@ in
   nix.settings = {
     auto-optimise-store = true;
 
-    extra-sandbox-paths = [ config.programs.ccache.cacheDir ];
+    extra-sandbox-paths = [config.programs.ccache.cacheDir];
 
     experimental-features = [
       "nix-command"
@@ -82,7 +80,7 @@ in
 
   programs.ccache.enable = true;
   programs.geary.enable = true;
-  environment.shells = [ pkgs.zsh ];
+  environment.shells = [pkgs.zsh];
 
   environment.systemPackages = with pkgs; [
     _1password-gui
@@ -115,6 +113,7 @@ in
     firmware-manager
     firmware-updater
     nil
+    rsync
     nixd
     nom
     tio
@@ -231,7 +230,7 @@ in
     videoDrivers = [
       "modesetting"
       "fbdev"
-      # "displaylink"
+      "displaylink"
     ];
   };
 
@@ -296,8 +295,24 @@ in
 
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-label/nixos";
-      fsType = "ext4";
+      device = "/dev/disk/by-uuid/48870f93-19d4-499b-baf4-9a740791cdb2";
+      fsType = "btrfs";
+      options = [
+        "subvol=rootfs"
+        #"compress=zstd"
+        "noatime"
+      ];
+      neededForBoot = true;
+    };
+    "/nix" = {
+      device = "/dev/disk/by-uuid/48870f93-19d4-499b-baf4-9a740791cdb2";
+      fsType = "btrfs";
+      options = [
+        "subvol=nix"
+        "compress=zstd"
+        "noatime"
+      ];
+      neededForBoot = true;
     };
     "/boot" = {
       device = "/dev/disk/by-label/ESP";
