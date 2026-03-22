@@ -4,7 +4,10 @@
   lib,
   config,
   ...
-}: {
+}: let
+  slbounce = pkgs.callPackage ./packages/slbounce.nix {};
+  qebspil = pkgs.callPackage ./packages/qebspil.nix {};
+in {
   imports = [./hardware.nix];
   nixpkgs.config.allowUnfree = true;
 
@@ -75,6 +78,8 @@
     ncdu
     gdu
     kitty
+    fzf
+    ripgrep
     vscode
     direnv
     alejandra
@@ -97,6 +102,9 @@
     firmware-updater
     nil
     nom
+    tio
+    hw-probe
+    yazi
     squashfsTools
     squashfs-tools-ng
     gparted
@@ -109,7 +117,7 @@
   services.pcscd.enable = true;
   services.tailscale.enable = true;
   fonts = {
-    fontDir.enable=true;
+    fontDir.enable = true;
     packages = with pkgs; [
       noto-fonts
       noto-fonts-cjk-sans
@@ -120,7 +128,8 @@
       dina-font
       proggyfonts
       nerd-fonts.fira-code
-      nerd-fonts.jetbrains-mono nerd-fonts.adwaita-mono
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.adwaita-mono
       adwaita-fonts
     ];
   };
@@ -158,10 +167,11 @@
     hostName = "qcom-nixos";
 
     wireless = {
-      enable = false; # true;
+      enable = false;
       iwd = {
         enable = true;
-        settings = {General.ControlPortOverNL80211 = false;
+        settings = {
+          General.ControlPortOverNL80211 = false;
           Settings = {
             AutoConnect = true;
             AlwaysRandomizeAddress = true;
@@ -170,7 +180,7 @@
             EnableIPv6 = true;
             RoutePriorityOffset = 300;
           };
-          DriverQuirks.DefaultInterface = "wlan0";
+          #DriverQuirks.DefaultInterface = "wlan0";
         };
       };
     };
@@ -261,10 +271,14 @@
     loader = {
       systemd-boot = {
         enable = true;
-        configurationLimit = 3;
+        configurationLimit = 5;
         netbootxyz.enable = true;
         edk2-uefi-shell.enable = true;
         consoleMode = "max";
+        extraFiles = {
+          "EFI/systemd/drivers/slbounceaa64.efi" = "${slbounce}/slbounce.efi";
+          "EFI/systemd/drivers/qebspilaa64.efi" = "${qebspil}/qebspilaa64.efi";
+        };
       };
     };
 

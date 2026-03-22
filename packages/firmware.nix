@@ -1,5 +1,12 @@
-{ python3, stdenv, cabextract, rsync, fetchurl, fetchFromGitHub, linux-firmware }:
-
+{
+  python3,
+  stdenv,
+  cabextract,
+  rsync,
+  fetchurl,
+  fetchFromGitHub,
+  linux-firmware,
+}:
 stdenv.mkDerivation (finalAttrs: {
   pname = "surface-firmware";
   version = "200.0.32.0";
@@ -11,7 +18,6 @@ stdenv.mkDerivation (finalAttrs: {
     rev = "4010ca49e14b4b1964e306c51fb9428c2ef79a7c";
     hash = "sha256-+dO+/iEABRq1lmtJmln/X7B/s7AlDkMwEUlzzXhQYO4=";
   };
-
 
   board-2 = "${linux-firmware}/lib/firmware/ath12k/WCN7850/hw2.0/board-2.bin";
 
@@ -36,6 +42,8 @@ stdenv.mkDerivation (finalAttrs: {
     mkdir -p $out/lib/firmware/ath12k/WCN7850/hw2.0
 
     python3 ${finalAttrs.bdencoder} --extract ${finalAttrs.board-2}
+    ls -la
+    cat board-2.json
     mv "bus=pci,vendor=17cb,device=1107,subsystem-vendor=17cb,subsystem-device=3378,qmi-chip-id=2,qmi-board-id=255.bin" $out/lib/firmware/ath12k/WCN7850/hw2.0/board.bin
 
     find "$out" -exec touch --date=2000-01-01 {} +

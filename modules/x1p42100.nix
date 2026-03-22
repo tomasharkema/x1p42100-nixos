@@ -9,8 +9,8 @@
       enable = true;
       name = "qcom/x1p42100-microsoft-sp12.dtb";
     };
-    enableAllFirmware = true;
-    enableRedistributableFirmware = true;
+    enableAllFirmware = lib.mkForce false; # true;;
+    enableRedistributableFirmware = lib.mkForce false; # true;;
   };
 
   systemd.tpm2.enable = false;
@@ -25,7 +25,8 @@
         "phy_snps_eusb2"
         "phy_qcom_eusb2_repeater"
         "tcsrcc_x1e80100"
-        "ext4" "btrfs"
+        "ext4"
+        "btrfs"
         "i2c_hid_of"
         "i2c_qcom_geni"
         "dispcc-x1e80100"
@@ -67,7 +68,8 @@
     kernelParams = [
       "pd_ignore_unused"
       "clk_ignore_unused"
-      #"efi=noruntime"
+      "efi=noruntime"
+      "pcie_aspm=off"
       #"console=tty1"
     ];
 

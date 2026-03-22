@@ -4,6 +4,7 @@
   buildLinux,
   linuxPackagesFor,
   ccacheStdenv,
+  fetchpatch,
   ...
 }:
 # linuxPackagesFor ( (buildLinux {
@@ -33,6 +34,16 @@ linuxPackagesFor (
       rev = "jg/sp12_dt";
       hash = "sha256-dcS5AHP40Saz21ZilNFYX4WtgYf404z+setpywvsopw=";
     };
+
+    kernelPatches = [
+      {
+        name = "gamma";
+        patch = fetchpatch {
+          url = "https://patchwork.kernel.org/project/linux-arm-msm/patch/20251018-dpu-add-dspp-gc-driver-v1-1-ed0369214252@izzo.pro/mbox/";
+          sha256 = "sha256-ez9nsrfhKGiP/YB9LsyRISYPDK1l9G8aqjnacCltQDE=";
+        };
+      }
+    ];
   })
    .override {stdenv = ccacheStdenv;}
 )
