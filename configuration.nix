@@ -196,7 +196,7 @@ in {
       ATTRS{vendor}=="0x17cb", \
       PROGRAM="${pkgs.iproute2}/bin/ip link set %k address 8c:1d:55:0d:50:54"
   '';
-
+  # systemd.network.units."80-iwd.link".enable = lib.mkForce false;
   networking = {
     hostName = "qcom-nixos";
 
@@ -208,13 +208,13 @@ in {
           General.ControlPortOverNL80211 = false;
           Settings = {
             AutoConnect = true;
-            AlwaysRandomizeAddress = true;
+            # AlwaysRandomizeAddress = true;
           };
           Network = {
             EnableIPv6 = true;
             RoutePriorityOffset = 300;
           };
-          #DriverQuirks.DefaultInterface = "wlan0";
+          # DriverQuirks.DefaultInterface = "wlan0";
         };
       };
     };
