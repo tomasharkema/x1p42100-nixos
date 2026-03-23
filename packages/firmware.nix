@@ -4,6 +4,7 @@
   cabextract,
   rsync,
   fetchurl,
+  fetchzip,
   fetchFromGitHub,
   linux-firmware,
 }:
@@ -26,6 +27,11 @@ stdenv.mkDerivation (finalAttrs: {
     hash = "sha256-hzn/GVo7nZmuBpuBsEZUcf928w03cgANq+kaUlGmeYA=";
   };
 
+  ath12 = fetchzip {
+    url = "https://git.codelinaro.org/clo/ath-firmware/ath12k-firmware/-/archive/main/ath12k-firmware-main.tar.gz";
+    sha256 = "sha256-4jWLPGli/thE/jdYrlQqIHGdjErp/xDOeaWcGTJdKhY=";
+  };
+
   nativeBuildInputs = [
     cabextract
     rsync
@@ -39,7 +45,11 @@ stdenv.mkDerivation (finalAttrs: {
     mkdir -p $out/share
     cp -vr ${finalAttrs.sp12}/usr/share/alsa $out/share
 
+
     mkdir -p $out/lib/firmware/ath12k/WCN7850/hw2.0
+
+    #cp -av ${finalAttrs.ath12}/. $out/lib/firmware/ath12k
+    #ls -lah $out/lib/firmware/ath12k
 
     python3 ${finalAttrs.bdencoder} --extract ${finalAttrs.board-2}
     ls -la

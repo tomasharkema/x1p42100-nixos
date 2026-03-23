@@ -7,6 +7,7 @@
 }: let
   slbounce = pkgs.callPackage ./packages/slbounce.nix {};
   qebspil = pkgs.callPackage ./packages/qebspil.nix {};
+  readmbn = pkgs.callPackage ./packages/readmbn.nix {};
 in {
   imports = [./hardware.nix];
   nixpkgs.config.allowUnfree = true;
@@ -83,8 +84,10 @@ in {
   environment.shells = [pkgs.zsh];
 
   environment.systemPackages = with pkgs; [
+    readmbn
     _1password-gui
     chromium
+    btrfs-assistant
     zed-editor
     ncdu
     helix
@@ -168,14 +171,14 @@ in {
 
   # rtkit (optional, recommended) allows Pipewire to use the realtime scheduler for increased performance.
   security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true; # if not already enabled
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    # If you want to use JACK applications, uncomment the following
-    #jack.enable = true;
-  };
+  # services.pipewire = {
+  #   enable = true; # if not already enabled
+  #   alsa.enable = true;
+  #   alsa.support32Bit = true;
+  #   pulse.enable = true;
+  #   # If you want to use JACK applications, uncomment the following
+  #   #jack.enable = true;
+  # };
 
   networking = {
     hostName = "qcom-nixos";
