@@ -96,6 +96,8 @@ in {
     chromium
     btrfs-assistant
     zed-editor
+    television
+    telegram-desktop
     ncdu
     helix
     gdu
@@ -199,30 +201,30 @@ in {
     hostName = "qcom-nixos";
 
     wireless = {
-      enable = true; # false;
-      # iwd = {
-      #   enable = true;
-      #   settings = {
-      #     General.ControlPortOverNL80211 = false;
-      #     Settings = {
-      #       AutoConnect = true;
-      #       AlwaysRandomizeAddress = true;
-      #     };
-      #     Network = {
-      #       EnableIPv6 = true;
-      #       RoutePriorityOffset = 300;
-      #     };
-      #     #DriverQuirks.DefaultInterface = "wlan0";
-      #   };
-      # };
+      enable = false; # true; # false;
+      iwd = {
+        enable = true;
+        settings = {
+          General.ControlPortOverNL80211 = false;
+          Settings = {
+            AutoConnect = true;
+            AlwaysRandomizeAddress = true;
+          };
+          Network = {
+            EnableIPv6 = true;
+            RoutePriorityOffset = 300;
+          };
+          #DriverQuirks.DefaultInterface = "wlan0";
+        };
+      };
     };
 
     networkmanager = {
       enable = true;
 
-      #wifi = {
-      #  backend = "iwd";
-      #};
+      wifi = {
+        backend = "iwd";
+      };
     };
   };
 
