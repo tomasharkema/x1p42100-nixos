@@ -4,12 +4,14 @@
   lib,
   config,
   ...
-}: let
-  slbounce = pkgs.callPackage ./packages/slbounce.nix {};
-  qebspil = pkgs.callPackage ./packages/qebspil.nix {};
-  readmbn = pkgs.callPackage ./packages/readmbn.nix {};
-in {
-  imports = [./hardware.nix];
+}:
+let
+  slbounce = pkgs.callPackage ./packages/slbounce.nix { };
+  qebspil = pkgs.callPackage ./packages/qebspil.nix { };
+  readmbn = pkgs.callPackage ./packages/readmbn.nix { };
+in
+{
+  imports = [ ./hardware.nix ];
   nixpkgs.config.allowUnfree = true;
 
   nixpkgs.overlays = [
@@ -48,7 +50,7 @@ in {
   nix.settings = {
     auto-optimise-store = true;
 
-    extra-sandbox-paths = [config.programs.ccache.cacheDir];
+    extra-sandbox-paths = [ config.programs.ccache.cacheDir ];
 
     experimental-features = [
       "nix-command"
@@ -81,7 +83,7 @@ in {
 
   programs.ccache.enable = true;
   programs.geary.enable = true;
-  environment.shells = [pkgs.zsh];
+  environment.shells = [ pkgs.zsh ];
 
   environment.systemPackages = with pkgs; [
     readmbn
@@ -180,34 +182,42 @@ in {
   #   #jack.enable = true;
   # };
 
+  services.udev.extraRules = ''
+    SUBSYSTEM=="net", ACTION=="add", \
+      ATTRS{subsystem_device}=="0x1414", \
+      ATTRS{subsystem_vendor}=="0x00ab", \
+      ATTRS{vendor}=="0x17cb", \
+      PROGRAM="${pkgs.iproute2}/bin/ip link set %k address 8c:1d:55:0d:50:54"
+  '';
+
   networking = {
     hostName = "qcom-nixos";
 
     wireless = {
-      enable = false;
-      iwd = {
-        enable = true;
-        settings = {
-          General.ControlPortOverNL80211 = false;
-          Settings = {
-            AutoConnect = true;
-            AlwaysRandomizeAddress = true;
-          };
-          Network = {
-            EnableIPv6 = true;
-            RoutePriorityOffset = 300;
-          };
-          #DriverQuirks.DefaultInterface = "wlan0";
-        };
-      };
+      enable = true; # false;
+      # iwd = {
+      #   enable = true;
+      #   settings = {
+      #     General.ControlPortOverNL80211 = false;
+      #     Settings = {
+      #       AutoConnect = true;
+      #       AlwaysRandomizeAddress = true;
+      #     };
+      #     Network = {
+      #       EnableIPv6 = true;
+      #       RoutePriorityOffset = 300;
+      #     };
+      #     #DriverQuirks.DefaultInterface = "wlan0";
+      #   };
+      # };
     };
 
     networkmanager = {
       enable = true;
 
-      wifi = {
-        backend = "iwd";
-      };
+      #wifi = {
+      #  backend = "iwd";
+      #};
     };
   };
 
