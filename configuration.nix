@@ -4,14 +4,12 @@
   lib,
   config,
   ...
-}:
-let
-  slbounce = pkgs.callPackage ./packages/slbounce.nix { };
-  qebspil = pkgs.callPackage ./packages/qebspil.nix { };
-  readmbn = pkgs.callPackage ./packages/readmbn.nix { };
-in
-{
-  imports = [ ./hardware.nix ];
+}: let
+  slbounce = pkgs.callPackage ./packages/slbounce.nix {};
+  qebspil = pkgs.callPackage ./packages/qebspil.nix {};
+  readmbn = pkgs.callPackage ./packages/readmbn.nix {};
+in {
+  imports = [./hardware.nix];
   nixpkgs.config.allowUnfree = true;
 
   nixpkgs.overlays = [
@@ -50,7 +48,7 @@ in
   nix.settings = {
     auto-optimise-store = true;
 
-    extra-sandbox-paths = [ config.programs.ccache.cacheDir ];
+    extra-sandbox-paths = [config.programs.ccache.cacheDir];
 
     experimental-features = [
       "nix-command"
@@ -81,9 +79,16 @@ in
     };
   };
 
+  # programs.ssh = {
+  #   extraConfig = ''
+  #     Host *
+  #      IdentityAgent ~/.1password/agent.sock
+  #   '';
+  # };
+
   programs.ccache.enable = true;
   programs.geary.enable = true;
-  environment.shells = [ pkgs.zsh ];
+  environment.shells = [pkgs.zsh];
 
   environment.systemPackages = with pkgs; [
     readmbn

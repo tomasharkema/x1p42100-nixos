@@ -25,15 +25,14 @@ stdenv.mkDerivation (finalAttrs: {
     sha256 = "sha256-4jWLPGli/thE/jdYrlQqIHGdjErp/xDOeaWcGTJdKhY=";
   };
 
-  board-2 = 
+  board-2 =
     #"${linux-firmware}/lib/firmware/ath12k/WCN7850/hw2.0/board-2.bin";
-"${finalAttrs.ath12}/WCN7850/hw2.0/board-2.bin";
+    "${finalAttrs.ath12}/WCN7850/hw2.0/board-2.bin";
 
   bdencoder = fetchurl {
     url = "https://raw.githubusercontent.com/qca/qca-swiss-army-knife/f2164085920540f4ecbfa0b12959918c601724b6/tools/scripts/ath12k/ath12k-bdencoder";
     hash = "sha256-hzn/GVo7nZmuBpuBsEZUcf928w03cgANq+kaUlGmeYA=";
   };
-
 
   nativeBuildInputs = [
     cabextract
@@ -58,7 +57,7 @@ stdenv.mkDerivation (finalAttrs: {
     ls -la
     cat board-2.json
     mv "bus=pci,vendor=17cb,device=1107,subsystem-vendor=17cb,subsystem-device=3378,qmi-chip-id=2,qmi-board-id=255.bin" $out/lib/firmware/ath12k/WCN7850/hw2.0/board.bin
-   
+
     find "$out" -exec touch --date=2000-01-01 {} +
   '';
 })
