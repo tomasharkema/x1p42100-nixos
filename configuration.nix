@@ -86,59 +86,64 @@ in {
   #   '';
   # };
 
+  programs.direnv.enable = true;
+
   programs.ccache.enable = true;
   programs.geary.enable = true;
   environment.shells = [pkgs.zsh];
 
   environment.systemPackages = with pkgs; [
-    readmbn
-    lazygit
-    systemctl-tui
     _1password-gui
-    chromium
-    btrfs-assistant
-    zed-editor
-    television
-    telegram-desktop
-    ncdu
-    helix
-    gdu
-    kitty
-    fzf
-    ripgrep
-    vscode
-    direnv
     alejandra
-    wget2
-    wofi
-    neovim
-    git
-    pv
-    gnome-firmware
-    htop
-    btop
+    apple-cursor
     bottom
-    zsh
-    usbutils
-    lshw
-    pciutils
-    sbctl
-    mission-center
+    btop
+    btrfs-assistant
+    chromium
+    devenv
+    direnv
     firmware-manager
     firmware-updater
+    fzf
+    gdu
+    ghostty
+    git
+    gnome-firmware
+    gnome-tweaks
+    gparted
+    helix
+    htop
+    hw-probe
+    kitty
+    lazygit
+    lm_sensors
+    lshw
+    mission-center
+    ncdu
+    neovim
     nil
-    rsync
     nixd
     nom
-    tio
-    hw-probe
-    yazi
-    squashfsTools
-    squashfs-tools-ng
-    gparted
-    apple-cursor
-    gnome-tweaks
+    pciutils
+    pv
+    readmbn
     refine
+    ripgrep
+    rsync
+    sbctl
+    squashfs-tools-ng
+    squashfsTools
+    systemctl-tui
+    telegram-desktop
+    television
+    tio
+    usbutils
+    vscode
+    wget2
+    wofi
+    yazi
+    zed-editor
+    zsh
   ];
   hardware.sensor.iio.enable = true;
   programs.zsh.enable = true;
