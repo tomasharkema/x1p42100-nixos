@@ -92,6 +92,8 @@ in {
 
   environment.systemPackages = with pkgs; [
     readmbn
+    lazygit
+    systemctl-tui
     _1password-gui
     chromium
     btrfs-assistant
@@ -312,6 +314,8 @@ in {
     initrd = {
     };
   };
+
+  time.hardwareClockInLocalTime = true;
 
   fileSystems = {
     "/" = {
