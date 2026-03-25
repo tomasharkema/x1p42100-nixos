@@ -8,6 +8,23 @@
   slbounce = pkgs.callPackage ./packages/slbounce.nix {};
   qebspil = pkgs.callPackage ./packages/qebspil.nix {};
   readmbn = pkgs.callPackage ./packages/readmbn.nix {};
+  firm = pkgs.callPackage ./packages/firmware.nix {};
+
+  alsa-ucm-conf-firm = pkgs.symlinkJoin {
+    inherit
+      (pkgs.alsa-ucm-conf)
+      pname
+      version
+      src
+      passthru
+      meta
+      ;
+    paths = [
+      pkgs.alsa-ucm-conf
+      pkgs.alsa-ucm-conf-asahi
+      firm
+    ];
+  };
 in {
   imports = [./hardware.nix];
   nixpkgs.config.allowUnfree = true;
@@ -101,6 +118,9 @@ in {
   };
 
   environment.systemPackages = with pkgs; [
+    minicom
+    impala
+    pwvucontrol
     alejandra
     apple-cursor
     bottom
@@ -143,6 +163,7 @@ in {
     systemctl-tui
     telegram-desktop
     television
+
     tio
     usbutils
     vscode
@@ -155,7 +176,10 @@ in {
   hardware.sensor.iio.enable = true;
   programs.zsh.enable = true;
   services.pcscd.enable = true;
-  services.tailscale.enable = true;
+  services.tailscale = {
+    enable = true;
+  };
+  virtualisation.waydroid.enable = true;
   fonts = {
     fontDir.enable = true;
     packages = with pkgs; [
@@ -194,14 +218,25 @@ in {
 
   # rtkit (optional, recommended) allows Pipewire to use the realtime scheduler for increased performance.
   security.rtkit.enable = true;
-  # services.pipewire = {
-  #   enable = true; # if not already enabled
-  #   alsa.enable = true;
-  #   alsa.support32Bit = true;
-  #   pulse.enable = true;
-  #   # If you want to use JACK applications, uncomment the following
-  #   #jack.enable = true;
-  # };
+  services.pipewire = {
+    enable = true; # if not already enabled
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    # If you want to use JACK applications, uncomment the following
+    #jack.enable = true;
+  };
+
+  # set up enivronment so that UCM configs are used as well
+  environment.variables.ALSA_CONFIG_UCM2 = "${alsa-ucm-conf-firm}/share/alsa/ucm2";
+  systemd.user.services.pipewire.environment.ALSA_CONFIG_UCM2 =
+    config.environment.variables.ALSA_CONFIG_UCM2;
+  systemd.user.services.wireplumber.environment.ALSA_CONFIG_UCM2 =
+    config.environment.variables.ALSA_CONFIG_UCM2;
+  systemd.services.pipewire.environment.ALSA_CONFIG_UCM2 =
+    config.environment.variables.ALSA_CONFIG_UCM2;
+  systemd.services.wireplumber.environment.ALSA_CONFIG_UCM2 =
+    config.environment.variables.ALSA_CONFIG_UCM2;
 
   services.udev.extraRules = ''
     SUBSYSTEM=="net", ACTION=="add", \
@@ -219,7 +254,7 @@ in {
       iwd = {
         enable = true;
         settings = {
-          General.ControlPortOverNL80211 = false;
+          #General.ControlPortOverNL80211 = false;
           Settings = {
             AutoConnect = true;
             # AlwaysRandomizeAddress = true;
@@ -322,8 +357,9 @@ in {
       ntfs = true;
       btrfs = true;
     };
-
+    kernelModules = ["kvm"];
     initrd = {
+      availableKernelModules = ["kvm"];
     };
   };
 

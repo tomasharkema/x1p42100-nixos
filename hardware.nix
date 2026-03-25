@@ -3,9 +3,11 @@
   pkgs,
   lib,
   ...
-}: let
-  firm = pkgs.callPackage ./packages/firmware.nix {};
-in {
+}:
+let
+  firm = pkgs.callPackage ./packages/firmware.nix { };
+in
+{
   # Ucomment the lines below for use in a flake config
 
   # imports = [
@@ -14,6 +16,9 @@ in {
 
   boot = {
     # consoleLogLevel = 9;
+    kernelModules = [
+      "kvm"
+    ];
     kernelParams = [
       # "debug"
       # "nohibernate"
@@ -41,8 +46,8 @@ in {
   };
 
   environment = {
-    systemPackages = [firm];
-    pathsToLink = ["/share/alsa"];
+    systemPackages = [ firm ];
+    pathsToLink = [ "/share/alsa" ];
   };
 
   hardware = {
