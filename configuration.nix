@@ -108,7 +108,7 @@ in {
   programs.ccache.enable = true;
   programs.geary.enable = true;
   environment.shells = [pkgs.zsh];
-
+  programs.nh.enable = true;
   programs._1password.enable = true;
   programs._1password-gui = {
     enable = true;
@@ -118,6 +118,7 @@ in {
   };
 
   environment.systemPackages = with pkgs; [
+    bottles
     minicom
     impala
     pwvucontrol
@@ -163,11 +164,12 @@ in {
     systemctl-tui
     telegram-desktop
     television
-
+    nix-init
     tio
     usbutils
     vscode
     wget2
+    wikiman
     wofi
     yazi
     zed-editor
@@ -362,6 +364,8 @@ in {
       availableKernelModules = ["kvm"];
     };
   };
+
+  services.fstrim.enable = true;
 
   time.hardwareClockInLocalTime = true;
 
