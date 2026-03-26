@@ -220,6 +220,7 @@ in {
 
   # rtkit (optional, recommended) allows Pipewire to use the realtime scheduler for increased performance.
   security.rtkit.enable = true;
+  services.pulseaudio.enable = false;
   services.pipewire = {
     enable = true; # if not already enabled
     alsa.enable = true;
@@ -227,6 +228,10 @@ in {
     pulse.enable = true;
     # If you want to use JACK applications, uncomment the following
     #jack.enable = true;
+
+    wireplumber = {
+      enable = true;
+    };
   };
 
   # set up enivronment so that UCM configs are used as well
