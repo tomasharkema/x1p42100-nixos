@@ -8,23 +8,22 @@
   slbounce = pkgs.callPackage ./packages/slbounce.nix {};
   qebspil = pkgs.callPackage ./packages/qebspil.nix {};
   readmbn = pkgs.callPackage ./packages/readmbn.nix {};
-  firm = pkgs.callPackage ./packages/firmware.nix {};
-
-  alsa-ucm-conf-firm = pkgs.symlinkJoin {
-    inherit
-      (pkgs.alsa-ucm-conf)
-      pname
-      version
-      src
-      passthru
-      meta
-      ;
-    paths = [
-      pkgs.alsa-ucm-conf
-      pkgs.alsa-ucm-conf-asahi
-      firm
-    ];
-  };
+  # firm = pkgs.callPackage ./packages/firmware.nix {};
+  # alsa-ucm-conf-firm = pkgs.symlinkJoin {
+  #   inherit
+  #     (pkgs.alsa-ucm-conf)
+  #     pname
+  #     version
+  #     src
+  #     passthru
+  #     meta
+  #     ;
+  #   paths = [
+  #     pkgs.alsa-ucm-conf
+  #     pkgs.alsa-ucm-conf-asahi
+  #     firm
+  #   ];
+  # };
 in {
   imports = [./hardware.nix];
   nixpkgs.config.allowUnfree = true;
@@ -62,19 +61,25 @@ in {
     })
   ];
 
-  nix.settings = {
-    auto-optimise-store = true;
+  nix = {
+    channel.enable = true;
+    optimise.automatic = true;
 
-    extra-sandbox-paths = [config.programs.ccache.cacheDir];
+    settings = {
+      auto-optimise-store = true;
 
-    experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
-    trusted-users = [
-      "root"
-      "tomas"
-    ];
+      extra-sandbox-paths = [config.programs.ccache.cacheDir];
+      use-cgroups = true;
+      experimental-features = [
+        "nix-command"
+        "flakes"
+        "cgroups"
+      ];
+      trusted-users = [
+        "root"
+        "tomas"
+      ];
+    };
   };
 
   services.fwupd.enable = true;
@@ -234,16 +239,16 @@ in {
     };
   };
 
-  # set up enivronment so that UCM configs are used as well
-  environment.variables.ALSA_CONFIG_UCM2 = "${alsa-ucm-conf-firm}/share/alsa/ucm2";
-  systemd.user.services.pipewire.environment.ALSA_CONFIG_UCM2 =
-    config.environment.variables.ALSA_CONFIG_UCM2;
-  systemd.user.services.wireplumber.environment.ALSA_CONFIG_UCM2 =
-    config.environment.variables.ALSA_CONFIG_UCM2;
-  systemd.services.pipewire.environment.ALSA_CONFIG_UCM2 =
-    config.environment.variables.ALSA_CONFIG_UCM2;
-  systemd.services.wireplumber.environment.ALSA_CONFIG_UCM2 =
-    config.environment.variables.ALSA_CONFIG_UCM2;
+  # # set up enivronment so that UCM configs are used as well
+  # environment.variables.ALSA_CONFIG_UCM2 = "${alsa-ucm-conf-firm}/share/alsa/ucm2";
+  # systemd.user.services.pipewire.environment.ALSA_CONFIG_UCM2 =
+  #   config.environment.variables.ALSA_CONFIG_UCM2;
+  # systemd.user.services.wireplumber.environment.ALSA_CONFIG_UCM2 =
+  #   config.environment.variables.ALSA_CONFIG_UCM2;
+  # systemd.services.pipewire.environment.ALSA_CONFIG_UCM2 =
+  #   config.environment.variables.ALSA_CONFIG_UCM2;
+  # systemd.services.wireplumber.environment.ALSA_CONFIG_UCM2 =
+  #   config.environment.variables.ALSA_CONFIG_UCM2;
 
   services.udev.extraRules = ''
     SUBSYSTEM=="net", ACTION=="add", \
@@ -359,20 +364,30 @@ in {
       };
     };
 
+    blacklistedKernelModules = [
+      "qcom-iris"
+      "soundwire-qcom"
+    ];
+
     supportedFilesystems = {
       nfs = true;
       ntfs = true;
       btrfs = true;
     };
+    crashDump.enable = true;
     kernelModules = ["kvm"];
     initrd = {
       availableKernelModules = ["kvm"];
+      compressor = "zstd";
+      compressorArgs = ["-19"];
     };
   };
 
   services.fstrim.enable = true;
 
-  time.hardwareClockInLocalTime = true;
+  time = {
+    hardwareClockInLocalTime = false;
+  };
 
   fileSystems = {
     "/" = {
@@ -390,7 +405,6 @@ in {
       fsType = "btrfs";
       options = [
         "subvol=nix"
-        "compress=zstd"
         "noatime"
       ];
       neededForBoot = true;
@@ -413,6 +427,16 @@ in {
       ];
     };
   };
+
+  swapDevices = [
+    {
+      device = "/swap/swapfile";
+      size = 16 * 1024;
+      options = ["discard"];
+    }
+  ];
+
+  zramSwap.enable = true;
 
   system.stateVersion = "26.05";
 }
