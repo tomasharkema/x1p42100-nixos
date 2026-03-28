@@ -4,28 +4,29 @@
   lib,
   config,
   ...
-}: let
-  slbounce = pkgs.callPackage ./packages/slbounce.nix {};
-  qebspil = pkgs.callPackage ./packages/qebspil.nix {};
-  readmbn = pkgs.callPackage ./packages/readmbn.nix {};
-  # firm = pkgs.callPackage ./packages/firmware.nix {};
-  # alsa-ucm-conf-firm = pkgs.symlinkJoin {
-  #   inherit
-  #     (pkgs.alsa-ucm-conf)
-  #     pname
-  #     version
-  #     src
-  #     passthru
-  #     meta
-  #     ;
-  #   paths = [
-  #     pkgs.alsa-ucm-conf
-  #     pkgs.alsa-ucm-conf-asahi
-  #     firm
-  #   ];
-  # };
-in {
-  imports = [./hardware.nix];
+}:
+let
+  slbounce = pkgs.callPackage ./packages/slbounce.nix { };
+  qebspil = pkgs.callPackage ./packages/qebspil.nix { };
+  readmbn = pkgs.callPackage ./packages/readmbn.nix { };
+  firm = pkgs.callPackage ./packages/firmware.nix { };
+  alsa-ucm-conf-firm = pkgs.symlinkJoin {
+    inherit (pkgs.alsa-ucm-conf)
+      pname
+      version
+      src
+      passthru
+      meta
+      ;
+    paths = [
+      pkgs.alsa-ucm-conf
+      pkgs.alsa-ucm-conf-asahi
+      firm
+    ];
+  };
+in
+{
+  imports = [ ./hardware.nix ];
   nixpkgs.config.allowUnfree = true;
 
   nixpkgs.overlays = [
@@ -68,7 +69,7 @@ in {
     settings = {
       auto-optimise-store = true;
 
-      extra-sandbox-paths = [config.programs.ccache.cacheDir];
+      extra-sandbox-paths = [ config.programs.ccache.cacheDir ];
       use-cgroups = true;
       experimental-features = [
         "nix-command"
@@ -112,14 +113,14 @@ in {
 
   programs.ccache.enable = true;
   programs.geary.enable = true;
-  environment.shells = [pkgs.zsh];
+  environment.shells = [ pkgs.zsh ];
   programs.nh.enable = true;
   programs._1password.enable = true;
   programs._1password-gui = {
     enable = true;
     # Certain features, including CLI integration and system authentication support,
     # require enabling PolKit integration on some desktop environments (e.g. Plasma).
-    polkitPolicyOwners = ["tomas"];
+    polkitPolicyOwners = [ "tomas" ];
   };
 
   environment.systemPackages = with pkgs; [
@@ -162,6 +163,7 @@ in {
     readmbn
     refine
     ripgrep
+    caligula
     rsync
     sbctl
     squashfs-tools-ng
@@ -240,15 +242,15 @@ in {
   };
 
   # # set up enivronment so that UCM configs are used as well
-  # environment.variables.ALSA_CONFIG_UCM2 = "${alsa-ucm-conf-firm}/share/alsa/ucm2";
-  # systemd.user.services.pipewire.environment.ALSA_CONFIG_UCM2 =
-  #   config.environment.variables.ALSA_CONFIG_UCM2;
-  # systemd.user.services.wireplumber.environment.ALSA_CONFIG_UCM2 =
-  #   config.environment.variables.ALSA_CONFIG_UCM2;
-  # systemd.services.pipewire.environment.ALSA_CONFIG_UCM2 =
-  #   config.environment.variables.ALSA_CONFIG_UCM2;
-  # systemd.services.wireplumber.environment.ALSA_CONFIG_UCM2 =
-  #   config.environment.variables.ALSA_CONFIG_UCM2;
+  environment.variables.ALSA_CONFIG_UCM2 = "${alsa-ucm-conf-firm}/share/alsa/ucm2";
+  systemd.user.services.pipewire.environment.ALSA_CONFIG_UCM2 =
+    config.environment.variables.ALSA_CONFIG_UCM2;
+  systemd.user.services.wireplumber.environment.ALSA_CONFIG_UCM2 =
+    config.environment.variables.ALSA_CONFIG_UCM2;
+  systemd.services.pipewire.environment.ALSA_CONFIG_UCM2 =
+    config.environment.variables.ALSA_CONFIG_UCM2;
+  systemd.services.wireplumber.environment.ALSA_CONFIG_UCM2 =
+    config.environment.variables.ALSA_CONFIG_UCM2;
 
   services.udev.extraRules = ''
     SUBSYSTEM=="net", ACTION=="add", \
@@ -345,7 +347,13 @@ in {
   };
 
   services.hardware.bolt.enable = true;
-
+  services.avahi = {
+    enable = true;
+    publish = {
+      workstation = true;
+      userServices = true;
+    };
+  };
   services.rpcbind.enable = true;
 
   boot = {
@@ -366,7 +374,9 @@ in {
 
     blacklistedKernelModules = [
       "qcom-iris"
-      "soundwire-qcom"
+      #"soundwire-qcom"
+      "snd-mixer-oss"
+      "snd-pcm-oss"
     ];
 
     supportedFilesystems = {
@@ -375,11 +385,11 @@ in {
       btrfs = true;
     };
     crashDump.enable = true;
-    kernelModules = ["kvm"];
+    kernelModules = [ "kvm" ];
     initrd = {
-      availableKernelModules = ["kvm"];
+      availableKernelModules = [ "kvm" ];
       compressor = "zstd";
-      compressorArgs = ["-19"];
+      compressorArgs = [ "-19" ];
     };
   };
 
@@ -432,7 +442,7 @@ in {
     {
       device = "/swap/swapfile";
       size = 16 * 1024;
-      options = ["discard"];
+      options = [ "discard" ];
     }
   ];
 

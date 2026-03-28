@@ -44,8 +44,8 @@ in {
   };
 
   environment = {
-    # systemPackages = [firm];
-    # pathsToLink = ["/share/alsa"];
+     systemPackages = [firm];
+    pathsToLink = ["/share/alsa"];
   };
 
   hardware = {
