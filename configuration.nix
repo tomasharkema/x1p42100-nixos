@@ -4,14 +4,14 @@
   lib,
   config,
   ...
-}:
-let
-  slbounce = pkgs.callPackage ./packages/slbounce.nix { };
-  qebspil = pkgs.callPackage ./packages/qebspil.nix { };
-  readmbn = pkgs.callPackage ./packages/readmbn.nix { };
-  firm = pkgs.callPackage ./packages/firmware.nix { };
+}: let
+  slbounce = pkgs.callPackage ./packages/slbounce.nix {};
+  qebspil = pkgs.callPackage ./packages/qebspil.nix {};
+  readmbn = pkgs.callPackage ./packages/readmbn.nix {};
+  firm = pkgs.callPackage ./packages/firmware.nix {};
   alsa-ucm-conf-firm = pkgs.symlinkJoin {
-    inherit (pkgs.alsa-ucm-conf)
+    inherit
+      (pkgs.alsa-ucm-conf)
       pname
       version
       src
@@ -24,9 +24,8 @@ let
       firm
     ];
   };
-in
-{
-  imports = [ ./hardware.nix ];
+in {
+  imports = [./hardware.nix];
   nixpkgs.config.allowUnfree = true;
 
   nixpkgs.overlays = [
@@ -39,6 +38,7 @@ in
           export CCACHE_SLOPPINESS=random_seed
           export CCACHE_MAXSIZE=20GB
           export CCACHE_RESHARE=1
+          export CCACHE_LOGFILE=/var/log/ccache/ccache.log
           export CCACHE_REMOTE_STORAGE=file:/mnt/cache/ccache
 
           if [ ! -d "$CCACHE_DIR" ]; then
@@ -69,7 +69,12 @@ in
     settings = {
       auto-optimise-store = true;
 
-      extra-sandbox-paths = [ config.programs.ccache.cacheDir ];
+      extra-sandbox-paths = [
+        config.programs.ccache.cacheDir
+        "/var/log/ccache"
+        "/mnt/cache/ccache"
+      ];
+
       use-cgroups = true;
       experimental-features = [
         "nix-command"
@@ -113,14 +118,14 @@ in
 
   programs.ccache.enable = true;
   programs.geary.enable = true;
-  environment.shells = [ pkgs.zsh ];
+  environment.shells = [pkgs.zsh];
   programs.nh.enable = true;
   programs._1password.enable = true;
   programs._1password-gui = {
     enable = true;
     # Certain features, including CLI integration and system authentication support,
     # require enabling PolKit integration on some desktop environments (e.g. Plasma).
-    polkitPolicyOwners = [ "tomas" ];
+    polkitPolicyOwners = ["tomas"];
   };
 
   environment.systemPackages = with pkgs; [
@@ -252,14 +257,16 @@ in
   systemd.services.wireplumber.environment.ALSA_CONFIG_UCM2 =
     config.environment.variables.ALSA_CONFIG_UCM2;
 
-  services.udev.extraRules = ''
-    SUBSYSTEM=="net", ACTION=="add", \
-      ATTRS{subsystem_device}=="0x1414", \
-      ATTRS{subsystem_vendor}=="0x00ab", \
-      ATTRS{vendor}=="0x17cb", \
-      PROGRAM="${pkgs.iproute2}/bin/ip link set %k address 8c:1d:55:0d:50:54"
-  '';
+  # services.udev.extraRules = ''
+  #   SUBSYSTEM=="net", ACTION=="add", \
+  #     ATTRS{subsystem_device}=="0x1414", \
+  #     ATTRS{subsystem_vendor}=="0x00ab", \
+  #     ATTRS{vendor}=="0x17cb", \
+  #     PROGRAM="${pkgs.iproute2}/bin/ip link set %k address 8c:1d:55:0d:50:54"
+  # '';
+
   # systemd.network.units."80-iwd.link".enable = lib.mkForce false;
+
   networking = {
     hostName = "qcom-nixos";
 
@@ -385,11 +392,11 @@ in
       btrfs = true;
     };
     crashDump.enable = true;
-    kernelModules = [ "kvm" ];
+    kernelModules = ["kvm"];
     initrd = {
-      availableKernelModules = [ "kvm" ];
+      availableKernelModules = ["kvm"];
       compressor = "zstd";
-      compressorArgs = [ "-19" ];
+      compressorArgs = ["-19"];
     };
   };
 
@@ -442,7 +449,7 @@ in
     {
       device = "/swap/swapfile";
       size = 16 * 1024;
-      options = [ "discard" ];
+      options = ["discard"];
     }
   ];
 

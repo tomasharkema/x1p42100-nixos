@@ -1,0 +1,13 @@
+diff --git a/arch/arm64/boot/dts/qcom/x1p42100-microsoft-sp12.dts b/arch/arm64/boot/dts/qcom/x1p42100-microsoft-sp12.dts
+index 37d6abdc6..b400c3329 100644
+--- a/arch/arm64/boot/dts/qcom/x1p42100-microsoft-sp12.dts
++++ b/arch/arm64/boot/dts/qcom/x1p42100-microsoft-sp12.dts
+@@ -873,7 +873,7 @@ wifi@0 {
+ 		vddpcie1p8-supply = <&vreg_pmu_pcie_1p8>;
+ 
+ 		disable-rfkill;
+-		local-mac-address = [ 8d fd f0 00 5a ae ];
++		local-mac-address = [ 8c 1d 55 0d 50 54 ];
+ 
+ 	};
+ };

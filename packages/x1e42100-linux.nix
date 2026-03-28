@@ -42,6 +42,10 @@ linuxPackagesFor (
           sha256 = "sha256-ez9nsrfhKGiP/YB9LsyRISYPDK1l9G8aqjnacCltQDE=";
         };
       }
+      {
+        name = "mac-address";
+        patch = ./mac-address.patch;
+      }
     ];
 
     # structuredExtraConfig = with lib.kernel; {
