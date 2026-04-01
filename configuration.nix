@@ -290,6 +290,7 @@ in {
       enable = true;
 
       wifi = {
+        powersave = true;
         backend = "iwd";
       };
     };
@@ -322,7 +323,6 @@ in {
   };
 
   services.desktopManager = {
-    cosmic.enable = true;
     gnome = {
       enable = true;
     };
@@ -353,6 +353,7 @@ in {
   services.hardware.bolt.enable = true;
   services.avahi = {
     enable = true;
+    openFirewall = true;
     publish = {
       workstation = true;
       userServices = true;
