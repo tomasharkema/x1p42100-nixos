@@ -37,6 +37,8 @@ in {
           export CCACHE_UMASK=007
           export CCACHE_SLOPPINESS=random_seed
           export CCACHE_MAXSIZE=20GB
+          export CCACHE_RESHARE=1
+          export CCACHE_REMOTE_STORAGE=file:/mnt/cache/ccache
 
           if [ ! -d "$CCACHE_DIR" ]; then
             echo "====="
