@@ -97,9 +97,9 @@ in {
       initialPassword = "arm";
       extraGroups = [
         "wheel"
-
         "dialout"
         "networkmanager"
+        "docker"
       ];
       shell = pkgs.zsh;
       uid = 1000;
@@ -122,12 +122,13 @@ in {
   programs._1password.enable = true;
   programs._1password-gui = {
     enable = true;
-    # Certain features, including CLI integration and system authentication support,
-    # require enabling PolKit integration on some desktop environments (e.g. Plasma).
     polkitPolicyOwners = ["tomas"];
   };
-
+  virtualisation.docker.enable = true;
   environment.systemPackages = with pkgs; [
+    flatpak-builder
+    devcontainer
+    distrobox
     bottles
     minicom
     impala
