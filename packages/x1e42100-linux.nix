@@ -23,7 +23,7 @@ linuxPackagesFor (
       owner = "jglathe";
       repo = "linux_ms_dev_kit";
       rev = "jg/ubuntu-qcom-x1e-6.19.y";
-      hash = "sha256-ji2IlIm3dyO0UdhVMW9gmBQ93ZjwjO84nH5Bh6zsJt8=";
+      hash = "sha256-f4pp8wctaJjDUqGXlIDJf0EYCO3m05owIXJi8LZBdQM=";
     };
     kernelPatches = [
       {
