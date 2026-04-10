@@ -67,7 +67,7 @@ in {
 
     settings = {
       auto-optimise-store = true;
-
+      cores = 6;
       extra-sandbox-paths = [
         config.programs.ccache.cacheDir
         "/var/log/ccache"
@@ -125,50 +125,60 @@ in {
     polkitPolicyOwners = ["tomas"];
   };
   virtualisation.docker.enable = true;
+  services.cachix-watch-store = {
+    #enable = true;
+    #cacheName = "qcom-x1p42100";
+  };
   environment.systemPackages = with pkgs; [
-    flatpak-builder
-    devcontainer
-    distrobox
-    bottles
-    minicom
-    impala
-    pwvucontrol
+    uxplay
     alejandra
     apple-cursor
+    bottles
     bottom
     btop
     btrfs-assistant
+    caligula
     chromium
+    cachix
+    devcontainer
     devenv
     direnv
+    distrobox
     firmware-manager
     firmware-updater
+    flatpak-builder
+    fractal
     fzf
+    gcc
     gdu
     ghostty
     git
     gnome-firmware
     gnome-tweaks
+    gnumake
     gparted
     helix
     htop
     hw-probe
+    impala
     kitty
     lazygit
     lm_sensors
     lshw
+    minicom
     mission-center
     ncdu
     neovim
     nil
+    nix-init
     nixd
     nom
     pciutils
     pv
+    pwvucontrol
     readmbn
     refine
     ripgrep
-    caligula
     rsync
     sbctl
     squashfs-tools-ng
@@ -176,7 +186,6 @@ in {
     systemctl-tui
     telegram-desktop
     television
-    nix-init
     tio
     usbutils
     vscode
@@ -233,7 +242,7 @@ in {
   # rtkit (optional, recommended) allows Pipewire to use the realtime scheduler for increased performance.
   security.rtkit.enable = true;
   services.pulseaudio.enable = false;
-  services.pipewire = {
+  services.pipewire = lib.mkIf false {
     enable = true; # if not already enabled
     alsa.enable = true;
     alsa.support32Bit = true;
@@ -275,7 +284,7 @@ in {
       iwd = {
         enable = true;
         settings = {
-          #General.ControlPortOverNL80211 = false;
+          General.ControlPortOverNL80211 = false;
           Settings = {
             AutoConnect = true;
             # AlwaysRandomizeAddress = true;
@@ -380,20 +389,25 @@ in {
       };
     };
 
-    blacklistedKernelModules = [
-      "qcom-iris"
-      #"soundwire-qcom"
-      "snd-mixer-oss"
-      "snd-pcm-oss"
-    ];
-
     supportedFilesystems = {
       nfs = true;
       ntfs = true;
       btrfs = true;
     };
     crashDump.enable = true;
+
     kernelModules = ["kvm"];
+    kernelParams = [
+      "drm.debug=0x100"
+    ];
+
+    blacklistedKernelModules = [
+      "qcom-iris"
+      "soundwire-qcom"
+      "snd-mixer-oss"
+      "snd-pcm-oss"
+    ];
+
     initrd = {
       availableKernelModules = ["kvm"];
       compressor = "zstd";
@@ -423,6 +437,7 @@ in {
       fsType = "btrfs";
       options = [
         "subvol=nix"
+        "compress=zstd"
         "noatime"
       ];
       neededForBoot = true;
@@ -448,7 +463,7 @@ in {
 
   swapDevices = [
     {
-      device = "/swap/swapfile";
+      device = "/dev/disk/by-partlabel/disk-swap";
       size = 16 * 1024;
       options = ["discard"];
     }

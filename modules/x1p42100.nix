@@ -70,7 +70,6 @@
       "clk_ignore_unused"
       "efi=noruntime"
       "pcie_aspm=off"
-      #"console=tty1"
     ];
 
     kernelPatches = [
