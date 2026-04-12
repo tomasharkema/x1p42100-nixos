@@ -254,6 +254,7 @@ in {
       enable = true;
     };
   };
+  services.cachefilesd.enable = true;
 
   # # set up enivronment so that UCM configs are used as well
   environment.variables.ALSA_CONFIG_UCM2 = "${alsa-ucm-conf-firm}/share/alsa/ucm2";
