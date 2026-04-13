@@ -146,6 +146,7 @@ in {
     distrobox
     firmware-manager
     firmware-updater
+    gh
     flatpak-builder
     fractal
     zellij
