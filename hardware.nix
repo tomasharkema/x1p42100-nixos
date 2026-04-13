@@ -44,7 +44,7 @@ in {
   };
 
   environment = {
-     systemPackages = [firm];
+    systemPackages = [firm];
     pathsToLink = ["/share/alsa"];
   };
 

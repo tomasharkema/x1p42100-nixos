@@ -148,6 +148,7 @@ in {
     firmware-updater
     flatpak-builder
     fractal
+    zellij
     fzf
     gcc
     gdu
@@ -172,6 +173,7 @@ in {
     nil
     nix-init
     nixd
+    calc
     nom
     pciutils
     pv
@@ -239,6 +241,17 @@ in {
       };
     }
   ];
+
+  services.kmscon = {
+    enable = true;
+
+    fonts = [
+      {
+        name = "AdwaitaMono-Regular";
+        package = pkgs.adwaita-fonts;
+      }
+    ];
+  };
 
   # rtkit (optional, recommended) allows Pipewire to use the realtime scheduler for increased performance.
   security.rtkit.enable = true;
@@ -400,20 +413,20 @@ in {
     };
     crashDump.enable = true;
 
-    kernelModules = ["kvm"];
+    # kernelModules = ["kvm"];
     kernelParams = [
-      "drm.debug=0x100"
+      # "drm.debug=0x100"
     ];
 
-    blacklistedKernelModules = [
-      "qcom-iris"
-      "soundwire-qcom"
-      "snd-mixer-oss"
-      "snd-pcm-oss"
-    ];
+    # blacklistedKernelModules = [
+    #   "qcom-iris"
+    #   "soundwire-qcom"
+    #   "snd-mixer-oss"
+    #   "snd-pcm-oss"
+    # ];
 
     initrd = {
-      availableKernelModules = ["kvm"];
+      # availableKernelModules = ["kvm"];
       compressor = "zstd";
       compressorArgs = ["-19"];
     };
