@@ -185,6 +185,7 @@ in {
     squashfsTools
     systemctl-tui
     telegram-desktop
+    attic-client
     television
     tio
     usbutils
@@ -242,7 +243,7 @@ in {
   # rtkit (optional, recommended) allows Pipewire to use the realtime scheduler for increased performance.
   security.rtkit.enable = true;
   services.pulseaudio.enable = false;
-  services.pipewire = lib.mkIf false {
+  services.pipewire = {
     enable = true; # if not already enabled
     alsa.enable = true;
     alsa.support32Bit = true;
@@ -255,6 +256,8 @@ in {
     };
   };
   services.cachefilesd.enable = true;
+
+  networking.modemmanager.enable = false;
 
   # # set up enivronment so that UCM configs are used as well
   environment.variables.ALSA_CONFIG_UCM2 = "${alsa-ucm-conf-firm}/share/alsa/ucm2";
@@ -303,7 +306,7 @@ in {
       enable = true;
 
       wifi = {
-        powersave = true;
+        # powersave = true;
         backend = "iwd";
       };
     };
