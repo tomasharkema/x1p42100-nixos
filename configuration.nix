@@ -29,6 +29,8 @@ in {
   nixpkgs.config.allowUnfree = true;
 
   nixpkgs.overlays = [
+    # inputs.nixos-muvm-fex.overlays.default
+
     (self: super: {
       ccacheWrapper = super.ccacheWrapper.override {
         extraConfig = ''
@@ -130,35 +132,37 @@ in {
     #cacheName = "qcom-x1p42100";
   };
   environment.systemPackages = with pkgs; [
-    uxplay
     alejandra
     apple-cursor
+    attic-client
+    autojump
     bottles
     bottom
     btop
     btrfs-assistant
+    cachix
+    calc
     caligula
     chromium
-    cachix
+    darktable
     devcontainer
     devenv
     direnv
     distrobox
     firmware-manager
     firmware-updater
-    gh
     flatpak-builder
     fractal
-    zellij
     fzf
     gcc
     gdu
+    gh
     ghostty
     git
     gnome-firmware
     gnome-tweaks
     gnumake
-    gparted
+    gparted-full
     helix
     htop
     hw-probe
@@ -173,8 +177,10 @@ in {
     neovim
     nil
     nix-init
+    nix-search
+    nix-search-cli
+    nix-search-tv
     nixd
-    calc
     nom
     pciutils
     pv
@@ -186,21 +192,36 @@ in {
     sbctl
     squashfs-tools-ng
     squashfsTools
+    starship
     systemctl-tui
     telegram-desktop
-    attic-client
     television
     tio
+    tv
     usbutils
+    uxplay
     vscode
     wget2
     wikiman
     wofi
     yazi
     zed-editor
+    zellij
     zsh
   ];
+
+  services.keyd = {
+    enable = true;
+    keyboards."default".settings = {
+      main = {
+        "leftshift+leftmeta" = "layer(control)";
+      };
+    };
+  };
+
+  services.gvfs.enable = true;
   hardware.sensor.iio.enable = true;
+  programs.gphoto2.enable = true;
   programs.zsh.enable = true;
   services.pcscd.enable = true;
   services.tailscale = {
