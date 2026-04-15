@@ -25,43 +25,11 @@
     ];
   };
 in {
-  imports = [./hardware.nix];
-  nixpkgs.config.allowUnfree = true;
-
-  nixpkgs.overlays = [
-    # inputs.nixos-muvm-fex.overlays.default
-
-    (self: super: {
-      ccacheWrapper = super.ccacheWrapper.override {
-        extraConfig = ''
-          export CCACHE_COMPRESS=1
-          export CCACHE_DIR="${config.programs.ccache.cacheDir}"
-          export CCACHE_UMASK=007
-          export CCACHE_SLOPPINESS=random_seed
-          export CCACHE_MAXSIZE=20GB
-          export CCACHE_RESHARE=true
-          export CCACHE_REMOTE_STORAGE=file:/mnt/cache/ccache
-
-          if [ ! -d "$CCACHE_DIR" ]; then
-            echo "====="
-            echo "Directory '$CCACHE_DIR' does not exist"
-            echo "Please create it with:"
-            echo "  sudo mkdir -m0770 '$CCACHE_DIR'"
-            echo "  sudo chown root:nixbld '$CCACHE_DIR'"
-            echo "====="
-            exit 1
-          fi
-          if [ ! -w "$CCACHE_DIR" ]; then
-            echo "====="
-            echo "Directory '$CCACHE_DIR' is not accessible for user $(whoami)"
-            echo "Please verify its access permissions"
-            echo "====="
-            exit 1
-          fi
-        '';
-      };
-    })
+  imports = [
+    ./hardware.nix
+    ./ccache.nix
   ];
+  nixpkgs.config.allowUnfree = true;
 
   nix = {
     channel.enable = true;
@@ -119,7 +87,7 @@ in {
 
   programs.direnv.enable = true;
 
-  programs.ccache.enable = true;
+
   programs.geary.enable = true;
   environment.shells = [pkgs.zsh];
   programs.nh.enable = true;
@@ -209,7 +177,7 @@ in {
     wikiman
     wofi
     yazi
-    zed-editor
+    # zed-editor
     zellij
     zsh
   ];
