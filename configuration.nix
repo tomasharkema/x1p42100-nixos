@@ -67,6 +67,8 @@ in {
     channel.enable = true;
     optimise.automatic = true;
 
+    package = pkgs.nixVersions.latest;
+
     settings = {
       auto-optimise-store = true;
       cores = 6;
@@ -165,6 +167,7 @@ in {
     gparted-full
     helix
     htop
+    resilio-sync
     hw-probe
     impala
     kitty
