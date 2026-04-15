@@ -22,7 +22,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   ath12 = fetchzip {
     url = "https://git.codelinaro.org/clo/ath-firmware/ath12k-firmware/-/archive/main/ath12k-firmware-main.tar.gz";
-    sha256 = "sha256-4jWLPGli/thE/jdYrlQqIHGdjErp/xDOeaWcGTJdKhY=";
+    sha256 = "sha256-DGyEp4+UGGuJ0qiM+jaHl6xOd02hCk92j28fIlGSoK4=";
   };
 
   board-2 =
