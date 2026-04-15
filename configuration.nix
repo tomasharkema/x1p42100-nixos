@@ -167,7 +167,6 @@ in {
     gparted-full
     helix
     htop
-    resilio-sync
     hw-probe
     impala
     kitty
@@ -190,6 +189,7 @@ in {
     pwvucontrol
     readmbn
     refine
+    resilio-sync
     ripgrep
     rsync
     sbctl
@@ -204,6 +204,7 @@ in {
     usbutils
     uxplay
     vscode
+    waypipe
     wget2
     wikiman
     wofi
