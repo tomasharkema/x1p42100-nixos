@@ -87,7 +87,6 @@ in {
 
   programs.direnv.enable = true;
 
-
   programs.geary.enable = true;
   environment.shells = [pkgs.zsh];
   programs.nh.enable = true;
@@ -407,9 +406,9 @@ in {
     };
     crashDump.enable = true;
 
-    # kernelModules = ["kvm"];
+    kernelModules = ["kvm"];
     kernelParams = [
-      # "drm.debug=0x100"
+      "drm.debug=0x100"
     ];
 
     # blacklistedKernelModules = [
@@ -420,7 +419,7 @@ in {
     # ];
 
     initrd = {
-      # availableKernelModules = ["kvm"];
+      availableKernelModules = ["kvm"];
       compressor = "zstd";
       compressorArgs = ["-19"];
     };
