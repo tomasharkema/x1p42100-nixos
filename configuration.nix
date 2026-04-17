@@ -198,7 +198,7 @@ in {
   services.tailscale = {
     enable = true;
   };
-  virtualisation.waydroid.enable = true;
+
   fonts = {
     fontDir.enable = true;
     packages = with pkgs; [
@@ -478,7 +478,7 @@ in {
       options = ["discard"];
     }
   ];
-
+  boot.resumeDevice = "/dev/disk/by-partlabel/disk-swap";
   zramSwap.enable = true;
 
   system.stateVersion = "26.05";
