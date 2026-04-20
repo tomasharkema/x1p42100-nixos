@@ -102,7 +102,7 @@ in {
   };
 
   nixpkgs.config.segger-jlink.acceptLicense = true;
-
+  programs.virt-manager.enable = true;
   environment.systemPackages = with pkgs; [
     alejandra
     apple-cursor

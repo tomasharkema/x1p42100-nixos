@@ -8,7 +8,7 @@
     INODECACHE = "true";
     COMPRESS = "true";
     DIR = "${config.programs.ccache.cacheDir}";
-    UMASK = "007";
+    UMASK = "002";
     SLOPPINESS = "random_seed";
     MAXSIZE = "20GB";
     RESHARE = "true";
@@ -37,7 +37,7 @@ in {
               echo "====="
               echo "Directory '$CCACHE_DIR' does not exist"
               echo "Please create it with:"
-              echo "  sudo mkdir -m0770 '$CCACHE_DIR'"
+              echo "  sudo mkdir -m0777 '$CCACHE_DIR'"
               echo "  sudo chown root:nixbld '$CCACHE_DIR'"
               echo "====="
               exit 1
