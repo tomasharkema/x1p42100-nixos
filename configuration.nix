@@ -100,6 +100,9 @@ in {
     #enable = true;
     #cacheName = "qcom-x1p42100";
   };
+
+  nixpkgs.config.segger-jlink.acceptLicense = true;
+
   environment.systemPackages = with pkgs; [
     alejandra
     apple-cursor
@@ -107,17 +110,20 @@ in {
     autojump
     bottles
     bottom
+    brave
     btop
     btrfs-assistant
     cachix
     calc
     caligula
     chromium
+    contact
     darktable
     devcontainer
     devenv
     direnv
     distrobox
+    firefox-beta
     firmware-manager
     firmware-updater
     flatpak-builder
@@ -145,12 +151,14 @@ in {
     ncdu
     neovim
     nil
+    nix-index
     nix-init
     nix-search
     nix-search-cli
     nix-search-tv
     nixd
     nom
+    nrfconnect
     pciutils
     pv
     pwvucontrol
@@ -173,10 +181,10 @@ in {
     vscode
     waypipe
     wget2
+    wike
     wikiman
     wofi
     yazi
-    # zed-editor
     zellij
     zsh
   ];
@@ -321,7 +329,10 @@ in {
   hardware.bluetooth.enable = true;
 
   programs = {
-    firefox.enable = true;
+    firefox = {
+      enable = true;
+      package = pkgs.firefox;
+    };
     # hyprland = {
     #   enable = true;
     #   package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
