@@ -18,12 +18,12 @@
 # })
 linuxPackagesFor (
   (buildLinux {
-    version = "6.19.10";
+    version = "6.19.12";
     src = fetchFromGitHub {
       owner = "jglathe";
       repo = "linux_ms_dev_kit";
       rev = "jg/ubuntu-qcom-x1e-6.19.y";
-      hash = "sha256-I/yb+R1tqiYWY+MT09ofhUgmUp37woH25wWSuV4nWGk=";
+      hash = "sha256-a5SywS0uGiIkXIORZTte84GJxU1qx6uv14IxqtdxWGQ=";
     };
 
     kernelPatches = [

@@ -5,14 +5,15 @@
   ...
 }: let
   ccacheOptions = {
-    INODECACHE = "true";
-    COMPRESS = "true";
+    #INODECACHE = "true";
+    #COMPRESS = "false";
     DIR = "${config.programs.ccache.cacheDir}";
     UMASK = "002";
     SLOPPINESS = "random_seed";
     MAXSIZE = "20GB";
     RESHARE = "true";
     REMOTE_STORAGE = "file:///mnt/cache/ccache|update-mtime=true";
+    LOGFILE = "syslog";
     # REMOTE_STORAGE = "file:/mnt/cache/ccache";
   };
 
@@ -57,7 +58,17 @@ in {
     environment = {
       systemPackages = [pkgs.ccache];
       variables = withCcachePrefix;
-    };
+    
+      etc."ccache.conf".text = ''
+        max_size = 20G
+        remote_storage = file:///mnt/cache/ccache|update-mtime=true
+        cache_dir = /var/cache/ccache
+        log_file = syslog
+        reshare = true
+        umask = 002
+        sloppiness = random_seed
+      '';
+};
 
     programs.ccache.enable = true;
   };
