@@ -62,11 +62,11 @@ in {
   services.fwupd.enable = true;
 
   users.users = {
-    root.initialPassword = "root";
+    # root.initialPassword = "root";
 
     tomas = {
       isNormalUser = true;
-      initialPassword = "arm";
+      # initialPassword = "arm";
       extraGroups = [
         "wheel"
         "dialout"
@@ -141,7 +141,6 @@ in {
     helix
     htop
     hw-probe
-    impala
     kitty
     lazygit
     lm_sensors
@@ -214,7 +213,6 @@ in {
       noto-fonts-cjk-sans
       noto-fonts-color-emoji
       liberation_ttf
-
       mplus-outline-fonts.githubRelease
       dina-font
       proggyfonts
@@ -263,7 +261,7 @@ in {
     alsa.support32Bit = true;
     pulse.enable = true;
     # If you want to use JACK applications, uncomment the following
-    #jack.enable = true;
+    jack.enable = true;
 
     wireplumber = {
       enable = true;
@@ -297,31 +295,31 @@ in {
   networking = {
     hostName = "qcom-nixos";
 
-    wireless = {
-      enable = false; # true; # false;
-      iwd = {
-        enable = true;
-        settings = {
-          General.ControlPortOverNL80211 = false;
-          Settings = {
-            AutoConnect = true;
-            # AlwaysRandomizeAddress = true;
-          };
-          Network = {
-            EnableIPv6 = true;
-            RoutePriorityOffset = 300;
-          };
-          # DriverQuirks.DefaultInterface = "wlan0";
-        };
-      };
-    };
+    # wireless = {
+    #   enable = false; # true; # false;
+    #   iwd = {
+    #     enable = true;
+    #     settings = {
+    #       General.ControlPortOverNL80211 = false;
+    #       Settings = {
+    #         AutoConnect = true;
+    #         # AlwaysRandomizeAddress = true;
+    #       };
+    #       Network = {
+    #         EnableIPv6 = true;
+    #         RoutePriorityOffset = 300;
+    #       };
+    #       # DriverQuirks.DefaultInterface = "wlan0";
+    #     };
+    #   };
+    # };
 
     networkmanager = {
       enable = true;
 
       wifi = {
         # powersave = true;
-        backend = "iwd";
+        # backend = "iwd";
       };
     };
   };
@@ -417,7 +415,7 @@ in {
     };
     crashDump.enable = true;
 
-    kernelModules = ["kvm"];
+    # kernelModules = ["kvm"];
     kernelParams = [
       "drm.debug=0x100"
     ];
@@ -430,9 +428,9 @@ in {
     # ];
 
     initrd = {
-      availableKernelModules = ["kvm"];
-      compressor = "zstd";
-      compressorArgs = ["-19"];
+      # availableKernelModules = ["kvm"];
+      # compressor = "zstd";
+      # compressorArgs = ["-19"];
     };
   };
 
