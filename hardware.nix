@@ -15,7 +15,7 @@ in {
   boot = {
     # consoleLogLevel = 9;
     kernelModules = [
-      "kvm"
+      # "kvm"
     ];
     kernelParams = [
       # "debug"
@@ -49,7 +49,7 @@ in {
   };
 
   hardware = {
-    enableRedistributableFirmware = lib.mkForce false; # true;;
+    enableRedistributableFirmware = true; # ib.mkForce false; # true;;
     firmware = with pkgs; [
       linux-firmware
       wireless-regdb

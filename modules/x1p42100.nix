@@ -9,8 +9,8 @@
       enable = true;
       name = "qcom/x1p42100-microsoft-sp12.dtb";
     };
-    enableAllFirmware = lib.mkForce false; # true;;
-    enableRedistributableFirmware = lib.mkForce false; # true;;
+    enableAllFirmware = true; # lib.mkForce false; # true;;
+    enableRedistributableFirmware = true; # lib.mkForce false; # true;;
   };
 
   systemd.tpm2.enable = false;
@@ -43,9 +43,13 @@
         "qrtr"
         "ufs_qcom"
         "phy_qcom_qmp_ufs"
+        "uas"
+        "typec"
+        "cdc_ether"
+        "r8152"
       ];
       kernelModules = [
-        # "ufshcd_qcom"
+        "ufshcd_qcom"
         "nvme"
         "f2fs"
         "usb_storage"
@@ -53,6 +57,13 @@
         "phy_snps_eusb2"
         "phy_qcom_eusb2_repeater"
         "uas"
+        "msm"
+        "dispcc_x1e80100"
+        "gpucc_x1p42100"
+        "i2c_hid_of"
+        "i2c_qcom_geni"
+        "typec"
+        "r8152"
       ];
       extraFirmwarePaths = [
         "qcom/gen71500_sqe.fw.zst"
@@ -70,27 +81,31 @@
       "clk_ignore_unused"
       "efi=noruntime"
       "pcie_aspm=off"
+      "regulator_ignore_unused"
+      "id_aa64mmfr0.ecv=1"
+      "console=tty0"
+      "cma=128MB"
     ];
 
-    kernelPatches = [
-      {
-        extraConfig = ''
-          CLK_X1E80100_CAMCC y
-          CLK_X1P42100_GPUCC y
-          HZ_1000 y
-          MFD_QCOM_RPM y
-          PCIE_QCOM y
-          PHY_QCOM_QMP y
-          PHY_QCOM_QMP_PCIE y
-          QCOM_CLK_RPM y
-          REGULATOR_QCOM_RPM y
-          SCHED_CLUSTER y
-          TYPEC y
-        '';
-        name = "snapdragon-config";
-        patch = null;
-      }
-    ];
+    # kernelPatches = [
+    #   {
+    #     extraConfig = ''
+    #       CLK_X1E80100_CAMCC y
+    #       CLK_X1P42100_GPUCC y
+    #       HZ_1000 y
+    #       MFD_QCOM_RPM y
+    #       PCIE_QCOM y
+    #       PHY_QCOM_QMP y
+    #       PHY_QCOM_QMP_PCIE y
+    #       QCOM_CLK_RPM y
+    #       REGULATOR_QCOM_RPM y
+    #       SCHED_CLUSTER y
+    #       TYPEC y
+    #     '';
+    #     name = "snapdragon-config";
+    #     patch = null;
+    #   }
+    # ];
 
     kernelPackages = pkgs.callPackage ../packages/x1e42100-linux.nix {};
   };
