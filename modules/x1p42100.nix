@@ -49,7 +49,7 @@
         "r8152"
       ];
       kernelModules = [
-        "ufshcd_qcom"
+        #"ufshcd_qcom"
         "nvme"
         "f2fs"
         "usb_storage"
