@@ -5,15 +5,15 @@
   ...
 }: let
   ccacheOptions = {
-    # INODECACHE = "true";
+    INODECACHE = "true";
     COMPRESS = "true";
     DIR = "${config.programs.ccache.cacheDir}";
     UMASK = "002";
-    SLOPPINESS = "random_seed";
+    SLOPPINESS = "locale,time_macros";
     MAXSIZE = "20GB";
     RESHARE = "true";
     REMOTE_STORAGE = "file:///mnt/cache/ccache";
-    # LOGFILE = "syslog";
+    LOGFILE = "syslog";
   };
 
   withCcachePrefix = lib.mapAttrs' (name: value: lib.nameValuePair ("CCACHE_" + name) value) ccacheOptions;
@@ -30,7 +30,7 @@ in {
     nixpkgs.overlays = [
       (self: super: {
         ccacheWrapper = super.ccacheWrapper.override {
-          extraConfig = builtins.trace "${exportVariables}" ''
+          extraConfig = builtins.trace "\n\n====\n\n${exportVariables}\n\n====\n\n" ''
             ${exportVariables}
 
             if [ ! -d "$CCACHE_DIR" ]; then
@@ -60,11 +60,14 @@ in {
 
       etc."ccache.conf".text = ''
         max_size = 20G
-        remote_storage = file:///mnt/cache/ccache
-        cache_dir = /var/cache/ccache
+        cache_dir = "${ccacheOptions.DIR}"
+        compression = true
         reshare = true
         umask = 002
-        sloppiness = random_seed
+        inode_cache = true
+        sloppiness = locale,time_macros
+        remote_storage = "${ccacheOptions.REMOTE_STORAGE}"
+        log_file = syslog
       '';
     };
 
