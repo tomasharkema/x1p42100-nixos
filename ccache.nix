@@ -89,12 +89,12 @@ in {
       };
     };
 
-       programs.ccache = {
+    programs.ccache = {
       enable = true;
       packageNames = [
         "sssd"
         "freeipa"
-];
-};
+      ];
+    };
   };
 }
