@@ -34,6 +34,11 @@ stdenv.mkDerivation (finalAttrs: {
     hash = "sha256-hzn/GVo7nZmuBpuBsEZUcf928w03cgANq+kaUlGmeYA=";
   };
 
+  qcvss8380 = fetchurl {
+    url = "https://drive.google.com/uc?id=13FgedOLcmZYvrWvnT1jfTIe6sAq2z-Wz&export=download";
+    hash = "sha256-o8pdmwCua7QHQ2a829toHDWSgBcrWeGJdHcFY5z8YKA=";
+  };
+
   nativeBuildInputs = [
     cabextract
     rsync
@@ -43,6 +48,10 @@ stdenv.mkDerivation (finalAttrs: {
   buildCommand = ''
     mkdir -p $out/lib/firmware
     cp -vr ${finalAttrs.sp12}/lib/firmware/qcom $out/lib/firmware/
+    ls -la $out/lib/firmware/qcom/
+    ls -la $out/lib/firmware/qcom/x1p42100/
+
+    install -m600 "${finalAttrs.qcvss8380}" $out/lib/firmware/qcom/x1p42100/qcvss8380.mbn
 
     mkdir -p $out/share
     cp -vr ${finalAttrs.sp12}/usr/share/alsa $out/share

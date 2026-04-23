@@ -3,7 +3,38 @@
   pkgs,
   lib,
   ...
-}: {
+}: let
+  slbounce = pkgs.callPackage ../packages/slbounce.nix {};
+  qebspil = pkgs.callPackage ../packages/qebspil.nix {};
+
+  dtbloader-new = pkgs.dtbloader.overrideAttrs (finalAttrs: {
+    pname = "dtbloader";
+    version = "1.5.4";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "TravMurav";
+      repo = "dtbloader";
+      tag = "1.5.4";
+      hash = "sha256-2M1S8cBsP/wX8ODAIR3iL7tRBhtpruWRIpBjK7bDku8=";
+      fetchSubmodules = true;
+    };
+  });
+
+  qcom-firm = [
+    "qcom/x1p42100/qccdsp8380.mbn"
+    "qcom/x1p42100/cdsp_dtbs.elf"
+    "qcom/x1p42100/qcdxkmsucpurwa.mbn"
+    "qcom/x1p42100/qcvss8380.mbn"
+    "qcom/x1p42100/qcadsp8380.mbn"
+    "qcom/x1p42100/adsp_dtbs.elf"
+  ];
+
+  boot-firmware = builtins.listToAttrs (map (v: {
+      value = builtins.unsafeDiscardStringContext "${config.hardware.firmware}/lib/firmware/${v}.zst";
+      name = "firmware/${v}";
+    })
+    qcom-firm);
+in {
   hardware = {
     deviceTree = {
       enable = true;
@@ -15,6 +46,26 @@
 
   systemd.tpm2.enable = false;
   boot = {
+    growPartition = false;
+    loader = {
+      systemd-boot = {
+        enable = true;
+        configurationLimit = 5;
+        netbootxyz.enable = true;
+        edk2-uefi-shell.enable = true;
+        consoleMode = "max";
+        extraFiles =
+          {
+            # "EFI/systemd/drivers/slbounceaa64.efi" = "${slbounce}/slbounce.efi";
+            "EFI/systemd/drivers/qebspilaa64.efi" = "${qebspil}/qebspilaa64.efi";
+            "EFI/systemd/drivers/dtbloaderaa64.efi" = "${dtbloader-new}/share/dtbloader/efi/dtbloader.efi";
+
+            "dtbloader/dtbs/${config.hardware.deviceTree.name}" = "${config.hardware.deviceTree.package}/${config.hardware.deviceTree.name}";
+          }
+          // boot-firmware;
+      };
+    };
+
     hardwareScan = true;
     initrd = {
       systemd.tpm2.enable = false;
@@ -73,6 +124,7 @@
         "qcom/x1p42100/qccdsp8380.mbn"
         "qcom/x1p42100/qcdxkmsuc8380.mbn"
         "qcom/x1p42100/qcdxkmsucpurwa.mbn"
+        "qcom/x1p42100/qcvss8380.mbn"
       ];
     };
 

@@ -5,23 +5,8 @@
   config,
   ...
 }: let
-  slbounce = pkgs.callPackage ./packages/slbounce.nix {};
-  qebspil = pkgs.callPackage ./packages/qebspil.nix {};
   readmbn = pkgs.callPackage ./packages/readmbn.nix {};
   firm = pkgs.callPackage ./packages/firmware.nix {};
-
-  dtbloader-new = pkgs.dtbloader.overrideAttrs (finalAttrs: {
-    pname = "dtbloader";
-    version = "1.5.4";
-
-    src = pkgs.fetchFromGitHub {
-      owner = "TravMurav";
-      repo = "dtbloader";
-      tag = "1.5.4";
-      hash = "sha256-2M1S8cBsP/wX8ODAIR3iL7tRBhtpruWRIpBjK7bDku8=";
-      fetchSubmodules = true;
-    };
-  });
 
   alsa-ucm-conf-firm = pkgs.symlinkJoin {
     inherit
@@ -44,7 +29,7 @@ in {
     ./ccache.nix
   ];
   nixpkgs.config.allowUnfree = true;
-  environment.etc."dtbloader".source = dtbloader-new;
+
   nix = {
     channel.enable = true;
     optimise.automatic = true;
@@ -407,22 +392,6 @@ in {
   services.rpcbind.enable = true;
 
   boot = {
-    growPartition = false;
-    loader = {
-      systemd-boot = {
-        enable = true;
-        configurationLimit = 5;
-        netbootxyz.enable = true;
-        edk2-uefi-shell.enable = true;
-        consoleMode = "max";
-        extraFiles = {
-          "EFI/systemd/drivers/slbounceaa64.efi" = "${slbounce}/slbounce.efi";
-          "EFI/systemd/drivers/qebspilaa64.efi" = "${qebspil}/qebspilaa64.efi";
-          "EFI/systemd/drivers/dtbloaderaa64.efi" = "${dtbloader-new}/share/dtbloader/efi/dtbloader.efi";
-        };
-      };
-    };
-
     supportedFilesystems = {
       nfs = true;
       ntfs = true;
