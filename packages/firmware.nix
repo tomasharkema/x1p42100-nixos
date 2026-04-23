@@ -10,7 +10,7 @@
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "surface-firmware";
-  version = "200.0.32.0";
+  version = "200.0.32.1";
   commit = "30e823d85c1fb4e410a4afdf9cd2285914ee712d";
 
   sp12 = fetchFromGitHub {
@@ -36,7 +36,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   qcvss8380 = fetchurl {
     url = "https://drive.google.com/uc?id=13FgedOLcmZYvrWvnT1jfTIe6sAq2z-Wz&export=download";
-    hash = "sha256-o8pdmwCua7QHQ2a829toHDWSgBcrWeGJdHcFY5z8YKA=";
+    hash = "sha256-Eh1oZOW4QI9cQ9IR8WNLWab7MzyYyIDNvNG8ufPH4vQ=";
   };
 
   nativeBuildInputs = [
@@ -45,13 +45,12 @@ stdenv.mkDerivation (finalAttrs: {
     python3
   ];
 
-  buildCommand = ''
-    mkdir -p $out/lib/firmware
-    cp -vr ${finalAttrs.sp12}/lib/firmware/qcom $out/lib/firmware/
-    ls -la $out/lib/firmware/qcom/
-    ls -la $out/lib/firmware/qcom/x1p42100/
+  # install -m600 "${finalAttrs.qcvss8380}" $out/lib/firmware/qcom/x1p42100/qcvss8380.mbn
 
+  buildCommand = ''
+    mkdir -p $out/lib/firmware/qcom/x1p42100
     install -m600 "${finalAttrs.qcvss8380}" $out/lib/firmware/qcom/x1p42100/qcvss8380.mbn
+    cp -va ${finalAttrs.sp12}/lib/firmware/qcom $out/lib/firmware/
 
     mkdir -p $out/share
     cp -vr ${finalAttrs.sp12}/usr/share/alsa $out/share

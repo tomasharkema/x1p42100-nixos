@@ -31,7 +31,7 @@
 
   boot-firmware = builtins.listToAttrs (map (v: {
       value = builtins.unsafeDiscardStringContext "${config.hardware.firmware}/lib/firmware/${v}.zst";
-      name = "firmware/${v}";
+      name = "firmware/${v}.zst";
     })
     qcom-firm);
 in {
@@ -137,6 +137,7 @@ in {
       "id_aa64mmfr0.ecv=1"
       "console=tty0"
       "cma=128MB"
+      "snd-soc-x1e80100.i_accept_the_danger=1"
     ];
 
     # kernelPatches = [

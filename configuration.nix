@@ -122,7 +122,7 @@ in {
     devenv
     direnv
     distrobox
-    firefox-beta
+    firefoxpwa
     firmware-manager
     firmware-updater
     flatpak-builder
@@ -161,6 +161,7 @@ in {
     pv
     pwvucontrol
     readmbn
+    sshfs
     refine
     resilio-sync
     ripgrep
@@ -281,6 +282,35 @@ in {
   systemd.services.wireplumber.environment.ALSA_CONFIG_UCM2 =
     config.environment.variables.ALSA_CONFIG_UCM2;
 
+  services.kbfs = {
+    enable = true;
+    # mountPoint = "/keybase";
+    # enableRedirector = true;
+    extraFlags = [
+      "-label kbfs"
+      "-mount-type normal"
+      # "-debug"
+    ];
+  };
+
+  systemd.user.services.kbfs = {
+    environment = {
+      PATH = lib.mkForce "/run/wrappers/bin";
+      KEYBASE_SYSTEMD = "1";
+    };
+    serviceConfig = {
+      ExecStartPre = lib.mkForce [
+        "${pkgs.coreutils}/bin/mkdir -p \"${config.services.kbfs.mountPoint}\""
+      ];
+
+      PrivateTmp = lib.mkForce null;
+    };
+  };
+
+  # security.wrappers."keybase-redirector" = {
+  #   owner = "root";
+  #   group = "root";
+  # };
   # services.udev.extraRules = ''
   #   SUBSYSTEM=="net", ACTION=="add", \
   #     ATTRS{subsystem_device}=="0x1414", \
