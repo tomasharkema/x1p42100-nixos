@@ -18,7 +18,8 @@
 # })
 linuxPackagesFor (
   (buildLinux {
-    version = "6.19.12";
+    version = "6.19.13";
+
     src = fetchFromGitHub {
       owner = "jglathe";
       repo = "linux_ms_dev_kit";
