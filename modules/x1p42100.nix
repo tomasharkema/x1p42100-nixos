@@ -6,6 +6,7 @@
 }: let
   slbounce = pkgs.callPackage ../packages/slbounce.nix {};
   qebspil = pkgs.callPackage ../packages/qebspil.nix {};
+  firm = pkgs.callPackage ./firmware.nix {};
 
   dtbloader-new = pkgs.dtbloader.overrideAttrs (finalAttrs: {
     pname = "dtbloader";
@@ -19,21 +20,27 @@
       fetchSubmodules = true;
     };
   });
-
-  qcom-firm = [
-    "qcom/x1p42100/qccdsp8380.mbn"
-    "qcom/x1p42100/cdsp_dtbs.elf"
-    "qcom/x1p42100/qcdxkmsucpurwa.mbn"
-    "qcom/x1p42100/qcvss8380.mbn"
-    "qcom/x1p42100/qcadsp8380.mbn"
-    "qcom/x1p42100/adsp_dtbs.elf"
+  qcom-firmware-paths = [
+    "qcom/x1p42100/Microsoft/Surface12/adsp_dtbs.elf"
+    "qcom/x1p42100/Microsoft/Surface12/adspr.jsn"
+    "qcom/x1p42100/Microsoft/Surface12/adsps.jsn"
+    "qcom/x1p42100/Microsoft/Surface12/adspua.jsn"
+    "qcom/x1p42100/Microsoft/Surface12/battmgr.jsn"
+    "qcom/x1p42100/Microsoft/Surface12/cdsp_dtbs.elf"
+    "qcom/x1p42100/Microsoft/Surface12/cdspr.jsn"
+    "qcom/x1p42100/Microsoft/Surface12/qcadsp8380.mbn"
+    "qcom/x1p42100/Microsoft/Surface12/qcadsprpc8380.cat"
+    "qcom/x1p42100/Microsoft/Surface12/qccdsp8380.mbn"
+    "qcom/x1p42100/Microsoft/Surface12/qcdxkmbase8380.bin"
+    "qcom/x1p42100/Microsoft/Surface12/qcdxkmbase8380_pa_111.bin"
+    "qcom/x1p42100/Microsoft/Surface12/qcdxkmsuc8380.mbn"
+    "qcom/x1p42100/Microsoft/Surface12/qcdxkmsucpurwa.mbn"
   ];
-
   boot-firmware = builtins.listToAttrs (map (v: {
       value = builtins.unsafeDiscardStringContext "${config.hardware.firmware}/lib/firmware/${v}.zst";
       name = "firmware/${v}.zst";
     })
-    qcom-firm);
+    qcom-firmware-paths);
 in {
   hardware = {
     deviceTree = {
@@ -42,6 +49,10 @@ in {
     };
     enableAllFirmware = true; # lib.mkForce false; # true;;
     enableRedistributableFirmware = true; # lib.mkForce false; # true;;
+
+    firmware = [
+      firm
+    ];
   };
 
   systemd.tpm2.enable = false;
@@ -56,10 +67,9 @@ in {
         consoleMode = "max";
         extraFiles =
           {
-            # "EFI/systemd/drivers/slbounceaa64.efi" = "${slbounce}/slbounce.efi";
+            "EFI/systemd/drivers/slbounceaa64.efi" = "${slbounce}/slbounce.efi";
             "EFI/systemd/drivers/qebspilaa64.efi" = "${qebspil}/qebspilaa64.efi";
             "EFI/systemd/drivers/dtbloaderaa64.efi" = "${dtbloader-new}/share/dtbloader/efi/dtbloader.efi";
-
             "dtbloader/dtbs/${config.hardware.deviceTree.name}" = "${config.hardware.deviceTree.package}/${config.hardware.deviceTree.name}";
           }
           // boot-firmware;
@@ -116,16 +126,20 @@ in {
         "typec"
         "r8152"
       ];
-      extraFirmwarePaths = [
-        "qcom/gen71500_sqe.fw.zst"
-        "qcom/gen71500_gmu.bin.zst"
-        "qcom/gen71500_zap.mbn.zst"
-        "qcom/x1p42100/qcadsp8380.mbn"
-        "qcom/x1p42100/qccdsp8380.mbn"
-        "qcom/x1p42100/qcdxkmsuc8380.mbn"
-        "qcom/x1p42100/qcdxkmsucpurwa.mbn"
-        "qcom/x1p42100/qcvss8380.mbn"
-      ];
+
+      extraFirmwarePaths =
+        [
+          "qcom/gen71500_sqe.fw.zst"
+          "qcom/gen71500_gmu.bin.zst"
+          "qcom/gen71500_zap.mbn.zst"
+
+          # "qcom/x1p42100/qcadsp8380.mbn"
+          # "qcom/x1p42100/qccdsp8380.mbn"
+          # "qcom/x1p42100/qcdxkmsuc8380.mbn"
+          # "qcom/x1p42100/qcdxkmsucpurwa.mbn"
+          # "qcom/x1p42100/qcvss8380.mbn"
+        ]
+        ++ qcom-firmware-paths;
     };
 
     kernelParams = [
@@ -136,8 +150,8 @@ in {
       "regulator_ignore_unused"
       "id_aa64mmfr0.ecv=1"
       "console=tty0"
-      "cma=128MB"
-      "snd-soc-x1e80100.i_accept_the_danger=1"
+      # "cma=128MB"
+      # "snd-soc-x1e80100.i_accept_the_danger=1"
     ];
 
     # kernelPatches = [
