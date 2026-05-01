@@ -1,13 +1,21 @@
-{ runCommand, fetchFromGitHub, lib, ... }: let
+{
+  runCommand,
+  fetchFromGitHub,
+  lib,
+  ...
+}: let
   #slim5x = ../firmware;
   slim5x = fetchFromGitHub {
-    owner = "Tokor0";
-    repo = "linux-firmware-x1p42100-lenovo-ideapad-slim5x";
-    rev = "bccb601c19bb2e4e3320a9666114c039836c4b9c";
-    hash = "sha256-x5Y75WCzl3JfdrL4pPw1xgzY/z/qK+DFfrMo1bh8Eh4=";
+    owner = "harrisonvanderbyl";
+    repo = "surface-pro-12-inch-linux";
+    rev = "main";
+    hash = "sha256-JNRtDfnpj6LX+auUPUjv4EmpC01c+WPMb70Xm5u9oRA=";
   };
-in runCommand "qcom-laptops-firmware" {} ''
-  mkdir -p $out/lib/firmware/qcom/x1p42100/LENOVO/83HL
-  cp ${slim5x}/qcom/x1p42100/LENOVO/83HL/{adsp_dtbs.elf,adspr.jsn,adsps.jsn,adspua.jsn,battmgr.jsn,cdsp_dtbs.elf,cdspr.jsn,qcadsp8380.mbn,qcav1e8380.mbn,qccdsp8380.mbn,qcdxkmsuc8380.mbn,qcdxkmsucpurwa.mbn,qcvss8380.mbn,qcvss8380_pa.mbn} \
-    $out/lib/firmware/qcom/x1p42100/LENOVO/83HL/
-''
+in
+  runCommand "qcom-laptops-firmware" {} ''
+    mkdir -p $out/lib/firmware
+    cp -vr ${slim5x}/lib/firmware/qcom $out/lib/firmware/
+
+    mkdir -p $out/share
+    cp -vr ${slim5x}/usr/share/alsa $out/share
+  ''

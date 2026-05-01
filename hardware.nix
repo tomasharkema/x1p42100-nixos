@@ -3,8 +3,9 @@
   pkgs,
   lib,
   ...
-}:
-{
+}: let
+  firm = pkgs.callPackage ./packages/firmware.nix {};
+in {
   # Ucomment the lines below for use in a flake config
 
   # imports = [
@@ -12,12 +13,29 @@
   # ];
 
   boot = {
+    # consoleLogLevel = 9;
+    kernelModules = [
+      # "kvm"
+    ];
+    kernelParams = [
+      # "debug"
+      # "nohibernate"
+      # "udev.log_level=7"
+      # "rd.systemd.debug_shell"
+      # "console=tty0"
+    ];
     loader = {
       efi.canTouchEfiVariables = true;
       systemd-boot = {
         enable = true;
-        configurationLimit = 2;
+        # enable = lib.mkForce false; # true;
+        # configurationLimit = 2;
       };
+      # refind.enable = true;
+      # grub = {
+      #   enable = lib.mkForce true;
+      #   device = "/dev/disk/by-label/ESP";
+      # };
     };
     initrd = {
       enable = true;
@@ -25,21 +43,17 @@
     };
   };
 
-  #hardware.enableRedistributableFirmware = true;
-  hardware.firmware = with pkgs; [
-    linux-firmware
-    wireless-regdb
-    (pkgs.callPackage ./modules/firmware.nix { })
-  ];
+  environment = {
+    systemPackages = [firm];
+    pathsToLink = ["/share/alsa"];
+  };
 
-  fileSystems = {
-    "/" = {
-      device = "/dev/disk/by-label/root";
-      fsType = "ext4";
-    };
-    "/boot" = {
-      device = "/dev/disk/by-label/SYSTEM_DRV";
-      fsType = "vfat";
-    };
+  hardware = {
+    enableRedistributableFirmware = true; # ib.mkForce false; # true;;
+    firmware = with pkgs; [
+      linux-firmware
+      wireless-regdb
+      firm
+    ];
   };
 }

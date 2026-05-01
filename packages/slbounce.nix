@@ -5,9 +5,7 @@
   fetchFromGitHub,
   buildPackages,
   dtc,
-}:
-
-let
+}: let
   aarch64-system-register-xmls = fetchzip {
     url = "https://developer.arm.com/-/media/developer/products/architecture/armv8-a-architecture/2020-06/SysReg_xml_v86A-2020-06.tar.gz";
     stripRoot = false;
@@ -18,12 +16,12 @@ let
     src = fetchFromGitHub {
       owner = "ashwio";
       repo = "arm64-sysreg-lib";
-      sparseCheckout = [ "/" ];
+      sparseCheckout = ["/"];
       rev = "d421e249a026f6f14653cb6f9c4edd8c5d898595";
       hash = "sha256-vUuV8eddYAdwXGQe+L7lKiAwyqHPYmiOdVFKvwCMWkQ=";
     };
     nativeBuildInputs = [
-      (buildPackages.python3.withPackages (ps: [ ps.beautifulsoup4 ]))
+      (buildPackages.python3.withPackages (ps: [ps.beautifulsoup4]))
     ];
     buildPhase = ''
       python ./run-build.py ${aarch64-system-register-xmls}/SysReg_xml_v86A-2020-06
@@ -47,31 +45,30 @@ let
     hash = "sha256-KZCzrvdWd6zfQHppjyp4XzqNCfH2UnuRneu+BNIRVAY=";
   };
 in
+  stdenv.mkDerivation (finalAttrs: {
+    pname = "slbounce";
+    version = "5";
+    src = fetchFromGitHub {
+      owner = "TravMurav";
+      repo = "slbounce";
+      tag = "v${finalAttrs.version}";
+      hash = "sha256-w+0SKR0A/hcFU6iFEOgyG+vWwgAWF8h9D0/X7GSFm7w=";
+    };
+    nativeBuildInputs = [dtc];
+    postPatch = ''
+      rmdir external/{arm64-sysreg-lib,dtc}
+      ln -s ${arm64-sysreg-lib} external/arm64-sysreg-lib
+      ln -s ${dtc-src} external/dtc
 
-stdenv.mkDerivation (finalAttrs: {
-  pname = "slbounce";
-  version = "5";
-  src = fetchFromGitHub {
-    owner = "TravMurav";
-    repo = "slbounce";
-    tag = "v${finalAttrs.version}";
-    hash = "sha256-w+0SKR0A/hcFU6iFEOgyG+vWwgAWF8h9D0/X7GSFm7w=";
-  };
-  nativeBuildInputs = [ dtc ];
-  postPatch = ''
-    rmdir external/{arm64-sysreg-lib,dtc}
-    ln -s ${arm64-sysreg-lib} external/arm64-sysreg-lib
-    ln -s ${dtc-src} external/dtc
-
-    cp -r ${gnu-efi}/* external/gnu-efi/
-    chmod -R u+w external/gnu-efi
-  '';
-  makeFlags = [
-    "CROSS_COMPILE=${stdenv.cc.targetPrefix}"
-    "all"
-  ];
-  installPhase = ''
-    mkdir -p $out
-    cp out/*.efi $out/
-  '';
-})
+      cp -r ${gnu-efi}/* external/gnu-efi/
+      chmod -R u+w external/gnu-efi
+    '';
+    makeFlags = [
+      "CROSS_COMPILE=${stdenv.cc.targetPrefix}"
+      "all"
+    ];
+    installPhase = ''
+      mkdir -p $out
+      cp out/*.efi $out/
+    '';
+  })

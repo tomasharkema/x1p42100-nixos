@@ -3,8 +3,13 @@
   fetchFromGitHub,
   buildLinux,
   linuxPackagesFor,
+  ccacheStdenv,
+  fetchpatch,
   ...
 }:
+linuxPackagesFor (
+  (buildLinux {
+    version = "6.19.14";
 
 linuxPackagesFor (buildLinux {
 
