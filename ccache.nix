@@ -4,16 +4,16 @@
   pkgs,
   ...
 }: let
+  remoteDir = "/mnt/ccache";
   ccacheOptions = {
     INODECACHE = "true";
     COMPRESS = "true";
     DIR = "${config.programs.ccache.cacheDir}";
     UMASK = "002";
-    SLOPPINESS = "locale,time_macros";
     MAXSIZE = "20GB";
     RESHARE = "true";
-    REMOTE_STORAGE = "file:///mnt/cache/ccache";
-    LOGFILE = "syslog";
+    REMOTE_STORAGE = "file://${remoteDir}";
+    
   };
 
   withCcachePrefix = lib.mapAttrs' (name: value: lib.nameValuePair ("CCACHE_" + name) value) ccacheOptions;
@@ -65,20 +65,18 @@ in {
         reshare = true
         umask = 002
         inode_cache = true
-        sloppiness = locale,time_macros
         remote_storage = "${ccacheOptions.REMOTE_STORAGE}"
-        log_file = syslog
       '';
     };
 
     nix.settings.extra-sandbox-paths = [
       config.programs.ccache.cacheDir
-      ccacheOptions.DIR
+      remoteDir
     ];
 
     fileSystems = {
-      "/mnt/cache" = {
-        device = "192.168.1.102:/volume1/cache";
+      "${remoteDir}" = {
+        device = "192.168.1.100:/export/ccache";
         fsType = "nfs";
         options = [
           "x-systemd.automount"

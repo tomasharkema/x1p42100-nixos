@@ -198,6 +198,7 @@ in {
   };
 
   services.gvfs.enable = true;
+  hardware.wooting.enable = true;
   hardware.sensor.iio.enable = true;
   programs.gphoto2.enable = true;
   programs.zsh.enable = true;

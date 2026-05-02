@@ -16,8 +16,8 @@ stdenv.mkDerivation (finalAttrs: {
   sp12 = fetchFromGitHub {
     owner = "harrisonvanderbyl";
     repo = "surface-pro-12-inch-linux";
-    rev = "4010ca49e14b4b1964e306c51fb9428c2ef79a7c";
-    hash = "sha256-+dO+/iEABRq1lmtJmln/X7B/s7AlDkMwEUlzzXhQYO4=";
+    rev = "main";
+    hash = "sha256-JNRtDfnpj6LX+auUPUjv4EmpC01c+WPMb70Xm5u9oRA=";
   };
 
   ath12 = fetchzip {
@@ -34,11 +34,6 @@ stdenv.mkDerivation (finalAttrs: {
     hash = "sha256-hzn/GVo7nZmuBpuBsEZUcf928w03cgANq+kaUlGmeYA=";
   };
 
-  qcvss8380 = fetchurl {
-    url = "https://drive.google.com/uc?id=13FgedOLcmZYvrWvnT1jfTIe6sAq2z-Wz&export=download";
-    hash = "sha256-Eh1oZOW4QI9cQ9IR8WNLWab7MzyYyIDNvNG8ufPH4vQ=";
-  };
-
   nativeBuildInputs = [
     cabextract
     rsync
@@ -48,13 +43,11 @@ stdenv.mkDerivation (finalAttrs: {
   # install -m600 "${finalAttrs.qcvss8380}" $out/lib/firmware/qcom/x1p42100/qcvss8380.mbn
 
   buildCommand = ''
-    mkdir -p $out/lib/firmware/qcom/x1p42100
-    install -m600 "${finalAttrs.qcvss8380}" $out/lib/firmware/qcom/x1p42100/qcvss8380.mbn
+    mkdir -p $out/lib/firmware/qcom
     cp -va ${finalAttrs.sp12}/lib/firmware/qcom $out/lib/firmware/
 
     mkdir -p $out/share
     cp -vr ${finalAttrs.sp12}/usr/share/alsa $out/share
-
 
     mkdir -p $out/lib/firmware/ath12k/WCN7850/hw2.0
 

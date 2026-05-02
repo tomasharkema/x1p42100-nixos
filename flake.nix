@@ -32,13 +32,11 @@
             url = "https://github.com/NixOS/nixpkgs/commit/de1fdb6310af8f70c98746ba4550dc2799a03621.patch";
             hash = "sha256-brqJxblmqWFAk8JgxmxXeHoiaWiQtsCsOzht/WlH5eE=";
           })
-          ./nixpkgs-efi-shell.patch
         ];
       }).overrideAttrs
       {allowSubstitutes = true;};
   in {
     nixosModules = {
-      qcom-fw = ./modules/firmware.nix;
       x1p = ./modules/x1p42100.nix;
     };
     packages."aarch64-linux".stubble = let

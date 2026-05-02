@@ -6,7 +6,7 @@
 }: let
   slbounce = pkgs.callPackage ../packages/slbounce.nix {};
   qebspil = pkgs.callPackage ../packages/qebspil.nix {};
-  firm = pkgs.callPackage ./firmware.nix {};
+  firm = pkgs.callPackage ../packages/firmware.nix {};
 
   dtbloader-new = pkgs.dtbloader.overrideAttrs (finalAttrs: {
     pname = "dtbloader";
@@ -37,22 +37,27 @@
     "qcom/x1p42100/Microsoft/Surface12/qcdxkmsucpurwa.mbn"
   ];
   boot-firmware = builtins.listToAttrs (map (v: {
-      value = builtins.unsafeDiscardStringContext "${config.hardware.firmware}/lib/firmware/${v}.zst";
-      name = "firmware/${v}.zst";
+      name = "firmware/${v}";
+      value = builtins.unsafeDiscardStringContext "${firm}/lib/firmware/${v}";
     })
     qcom-firmware-paths);
 in {
   hardware = {
     deviceTree = {
       enable = true;
-      name = "qcom/x1p42100-microsoft-sp12.dtb";
+      name = lib.mkDefault "qcom/x1p42100-microsoft-sp12.dtb";
     };
-    enableAllFirmware = true; # lib.mkForce false; # true;;
-    enableRedistributableFirmware = true; # lib.mkForce false; # true;;
+    # enableAllFirmware = true; # lib.mkForce false; # true;;
+    # enableRedistributableFirmware = true; # lib.mkForce false; # true;;
 
     firmware = [
       firm
     ];
+  };
+
+  specialisation.el2.configuration = {
+    hardware.deviceTree.name = lib.replaceString ".dtb" "-el2.dtb" config.hardware.deviceTree.name;
+    boot.kernelParams = ["id_aa64mmfr0.ecv=1"];
   };
 
   systemd.tpm2.enable = false;
@@ -70,7 +75,6 @@ in {
             "EFI/systemd/drivers/slbounceaa64.efi" = "${slbounce}/slbounce.efi";
             "EFI/systemd/drivers/qebspilaa64.efi" = "${qebspil}/qebspilaa64.efi";
             "EFI/systemd/drivers/dtbloaderaa64.efi" = "${dtbloader-new}/share/dtbloader/efi/dtbloader.efi";
-            "dtbloader/dtbs/${config.hardware.deviceTree.name}" = "${config.hardware.deviceTree.package}/${config.hardware.deviceTree.name}";
           }
           // boot-firmware;
       };
@@ -129,9 +133,9 @@ in {
 
       extraFirmwarePaths =
         [
-          "qcom/gen71500_sqe.fw.zst"
-          "qcom/gen71500_gmu.bin.zst"
-          "qcom/gen71500_zap.mbn.zst"
+          "qcom/gen71500_sqe.fw"
+          "qcom/gen71500_gmu.bin"
+          "qcom/gen71500_zap.mbn"
 
           # "qcom/x1p42100/qcadsp8380.mbn"
           # "qcom/x1p42100/qccdsp8380.mbn"
@@ -153,26 +157,6 @@ in {
       # "cma=128MB"
       # "snd-soc-x1e80100.i_accept_the_danger=1"
     ];
-
-    # kernelPatches = [
-    #   {
-    #     extraConfig = ''
-    #       CLK_X1E80100_CAMCC y
-    #       CLK_X1P42100_GPUCC y
-    #       HZ_1000 y
-    #       MFD_QCOM_RPM y
-    #       PCIE_QCOM y
-    #       PHY_QCOM_QMP y
-    #       PHY_QCOM_QMP_PCIE y
-    #       QCOM_CLK_RPM y
-    #       REGULATOR_QCOM_RPM y
-    #       SCHED_CLUSTER y
-    #       TYPEC y
-    #     '';
-    #     name = "snapdragon-config";
-    #     patch = null;
-    #   }
-    # ];
 
     kernelPackages = pkgs.callPackage ../packages/x1e42100-linux.nix {};
   };
