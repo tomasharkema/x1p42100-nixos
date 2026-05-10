@@ -15,24 +15,29 @@ linuxPackagesFor (
       owner = "jglathe";
       repo = "linux_ms_dev_kit";
       rev = "jg/ubuntu-qcom-x1e-6.19.y";
-      sha256 = "sha256-g2AGoH36ayHn853yuiiiQRikN41c0I4Rgnto55IrTlE=";
+      sha256 = "sha256-+geHPb+Y2RxH4Yt/OyBgsQg0iG7RFoXEYcK0C29k4GI="; # "sha256-rJ1p+ha0b8JcdRdx7DwCniVYdUHnMSqaJiQHvM4ui7U=";
     };
 
     kernelPatches = [
-      {
-        name = "dpu-add-dspp-gc-driver-v1-1-add-gamma";
-        patch = fetchpatch {
-          url = "https://patchwork.kernel.org/project/linux-arm-msm/patch/20251018-dpu-add-dspp-gc-driver-v1-1-ed0369214252@izzo.pro/mbox/";
-          sha256 = "sha256-ez9nsrfhKGiP/YB9LsyRISYPDK1l9G8aqjnacCltQDE=";
-        };
-      }
       {
         name = "mac-address";
         patch = ./mac-address.patch;
       }
     ];
-    # ignoreConfigErrors = true;
-    # structuredExtraConfig = with lib.kernel; {
+
+    structuredExtraConfig = with lib.kernel; {
+      CLK_X1E80100_CAMCC = yes;
+      CLK_X1P42100_GPUCC = yes;
+      HZ_1000 = yes;
+      MFD_QCOM_RPM = yes;
+      PCIE_QCOM = yes;
+      PHY_QCOM_QMP = yes;
+      PHY_QCOM_QMP_PCIE = yes;
+      QCOM_CLK_RPM = yes;
+      REGULATOR_QCOM_RPM = yes;
+      SCHED_CLUSTER = yes;
+      TYPEC = yes;
+    };
     #   VIRTUALIZATION = yes;
     #   KVM = yes;
     #   MAGIC_SYSRQ = yes;

@@ -152,7 +152,6 @@ in {
       "efi=noruntime"
       "pcie_aspm=off"
       "regulator_ignore_unused"
-      "id_aa64mmfr0.ecv=1"
       "console=tty0"
       # "cma=128MB"
       # "snd-soc-x1e80100.i_accept_the_danger=1"

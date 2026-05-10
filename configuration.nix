@@ -95,10 +95,11 @@ in {
     polkitPolicyOwners = ["tomas"];
   };
   virtualisation.docker.enable = true;
-  services.cachix-watch-store = {
-    #enable = true;
-    #cacheName = "qcom-x1p42100";
-  };
+
+  # services.cachix-watch-store = {
+  #   enable = true;
+  #   cacheName = "qcom-x1p42100";
+  # };
 
   nixpkgs.config.segger-jlink.acceptLicense = true;
   programs.virt-manager.enable = true;
@@ -166,7 +167,6 @@ in {
     resilio-sync
     ripgrep
     rsync
-    sbctl
     squashfs-tools-ng
     squashfsTools
     starship
@@ -429,6 +429,15 @@ in {
       btrfs = true;
     };
     crashDump.enable = true;
+
+    # loader.systemd-boot.enable = lib.mkForce false;
+
+    # lanzaboote = {
+    #   enable = true;
+    #   pkiBundle = "/var/lib/sbctl";
+    #   autoEnrollKeys.enable = true;
+    #   autoGenerateKeys.enable = true;
+    # };
 
     # kernelModules = ["kvm"];
     kernelParams = [
