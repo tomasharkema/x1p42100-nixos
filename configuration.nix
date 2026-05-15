@@ -412,6 +412,7 @@ in {
   };
 
   services.hardware.bolt.enable = true;
+  hardware.flipperzero.enable = true;
   services.avahi = {
     enable = true;
     openFirewall = true;
@@ -441,7 +442,7 @@ in {
 
     # kernelModules = ["kvm"];
     kernelParams = [
-      "drm.debug=0x100"
+      #"drm.debug=0x100"
     ];
 
     # blacklistedKernelModules = [
