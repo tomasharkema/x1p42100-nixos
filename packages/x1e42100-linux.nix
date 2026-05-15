@@ -5,6 +5,8 @@
   linuxPackagesFor,
   ccacheStdenv,
   fetchpatch,
+  stdenv,
+  withCcache ? false,
   ...
 }: let
   versions = {
@@ -143,5 +145,5 @@ in
       #   SND_PCI = no;
       # };
     })
-   .override {stdenv = ccacheStdenv;}
+    .override {stdenv = if withCcache then ccacheStdenv else stdenv;}
   )
