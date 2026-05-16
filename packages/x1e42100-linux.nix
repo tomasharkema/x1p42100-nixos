@@ -16,7 +16,7 @@
     linux_7_1 = {
       version = "7.1.0-rc3";
       rev = "jg/ubuntu-qcom-x1e-7.1rc";
-      sha256 = "sha256-/8q2hOJmYL24FeZ/sX6k40ZXSnIXFjHLRA8lE7D+qZs=";
+      sha256 = "sha256-21rkD1S4+5disz9FTPVkEhd5fd/YNIXPwswmQkD58iQ=";
     };
   };
 
