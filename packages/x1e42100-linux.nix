@@ -51,18 +51,29 @@ in
         REGULATOR_QCOM_RPM = yes;
         SCHED_CLUSTER = yes;
         TYPEC = yes;
+
+        VIRTUALIZATION = yes;
+        KVM = yes;
+        MAGIC_SYSRQ = yes;
+
+        # Stuff to reduce compile times.
+        # ACPI = no;
+
+        # ACPI_DEBUG = lib.mkForce no;
+        # ACPI_HOTPLUG_CPU = lib.mkForce no;
+        # ACPI_HOTPLUG_MEMORY = lib.mkForce no;
+        # CHROMEOS_TBMC = lib.mkForce no;
+        # DRM_AMD_ISP = lib.mkForce no;
+        # HOTPLUG_PCI_ACPI = lib.mkForce no;
+        # PINCTRL_AMD =
+        #   # lib.mkForce
+        #   no;
+
+        # HOTPLUG_PCI = no;
+
+        # PREEMPT_LAZY = yes;
+        # PREEMPT_VOLUNTARY = yes;
       };
-      #   VIRTUALIZATION = yes;
-      #   KVM = yes;
-      #   MAGIC_SYSRQ = yes;
-
-      #   # Stuff to reduce compile times.
-      #   ACPI = no;
-
-      #   HOTPLUG_PCI = no;
-
-      #   PREEMPT_LAZY = yes;
-      #   PREEMPT_VOLUNTARY = yes;
 
       #   ARCH_ACTIONS = no;
       #   ARCH_AIROHA = no;

@@ -41,8 +41,6 @@ in {
       cores = 6;
       extra-sandbox-paths = [
         config.programs.ccache.cacheDir
-        "/var/log/ccache"
-        "/mnt/cache/ccache"
       ];
 
       use-cgroups = true;
@@ -273,23 +271,23 @@ in {
   networking.modemmanager.enable = false;
 
   # # set up enivronment so that UCM configs are used as well
-  environment.variables.ALSA_CONFIG_UCM2 = "${alsa-ucm-conf-firm}/share/alsa/ucm2";
-  systemd.user.services.pipewire.environment.ALSA_CONFIG_UCM2 =
-    config.environment.variables.ALSA_CONFIG_UCM2;
-  systemd.user.services.wireplumber.environment.ALSA_CONFIG_UCM2 =
-    config.environment.variables.ALSA_CONFIG_UCM2;
-  systemd.services.pipewire.environment.ALSA_CONFIG_UCM2 =
-    config.environment.variables.ALSA_CONFIG_UCM2;
-  systemd.services.wireplumber.environment.ALSA_CONFIG_UCM2 =
-    config.environment.variables.ALSA_CONFIG_UCM2;
+  # environment.variables.ALSA_CONFIG_UCM2 = "${alsa-ucm-conf-firm}/share/alsa/ucm2";
+  # systemd.user.services.pipewire.environment.ALSA_CONFIG_UCM2 =
+  #   config.environment.variables.ALSA_CONFIG_UCM2;
+  # systemd.user.services.wireplumber.environment.ALSA_CONFIG_UCM2 =
+  #   config.environment.variables.ALSA_CONFIG_UCM2;
+  # systemd.services.pipewire.environment.ALSA_CONFIG_UCM2 =
+  #   config.environment.variables.ALSA_CONFIG_UCM2;
+  # systemd.services.wireplumber.environment.ALSA_CONFIG_UCM2 =
+  #   config.environment.variables.ALSA_CONFIG_UCM2;
 
   services.kbfs = {
     enable = true;
     # mountPoint = "/keybase";
     # enableRedirector = true;
     extraFlags = [
-      "-label kbfs"
-      "-mount-type normal"
+      "-label Keybase"
+      # "-mount-type normal"
       # "-debug"
     ];
   };
@@ -312,13 +310,6 @@ in {
   #   owner = "root";
   #   group = "root";
   # };
-  # services.udev.extraRules = ''
-  #   SUBSYSTEM=="net", ACTION=="add", \
-  #     ATTRS{subsystem_device}=="0x1414", \
-  #     ATTRS{subsystem_vendor}=="0x00ab", \
-  #     ATTRS{vendor}=="0x17cb", \
-  #     PROGRAM="${pkgs.iproute2}/bin/ip link set %k address 8c:1d:55:0d:50:54"
-  # '';
 
   # systemd.network.units."80-iwd.link".enable = lib.mkForce false;
 
@@ -359,7 +350,7 @@ in {
   programs = {
     firefox = {
       enable = true;
-      package = pkgs.firefox;
+      # package = pkgs.firefox;
     };
     # hyprland = {
     #   enable = true;
@@ -402,12 +393,7 @@ in {
 
   services.displayManager.gdm = {
     enable = true;
-    # autoSuspend makes the machine automatically suspend after inactivity.
-    # It's possible someone could/try to ssh'd into the machine and obviously
-    # have issues because it's inactive.
-    # See:
-    # * https://github.com/NixOS/nixpkgs/pull/63790
-    # * https://gitlab.gnome.org/GNOME/gnome-control-center/issues/22
+
     autoSuspend = false;
   };
 
@@ -431,26 +417,17 @@ in {
     };
     crashDump.enable = true;
 
-    # loader.systemd-boot.enable = lib.mkForce false;
-
-    # lanzaboote = {
-    #   enable = true;
-    #   pkiBundle = "/var/lib/sbctl";
-    #   autoEnrollKeys.enable = true;
-    #   autoGenerateKeys.enable = true;
-    # };
-
     # kernelModules = ["kvm"];
     kernelParams = [
       #"drm.debug=0x100"
     ];
 
-    # blacklistedKernelModules = [
-    #   "qcom-iris"
-    #   "soundwire-qcom"
-    #   "snd-mixer-oss"
-    #   "snd-pcm-oss"
-    # ];
+    blacklistedKernelModules = [
+      "qcom-iris"
+      #   "soundwire-qcom"
+      #   "snd-mixer-oss"
+      #   "snd-pcm-oss"
+    ];
 
     initrd = {
       # availableKernelModules = ["kvm"];
@@ -462,7 +439,7 @@ in {
   services.fstrim.enable = true;
 
   time = {
-    hardwareClockInLocalTime = false;
+    hardwareClockInLocalTime = true;
   };
 
   fileSystems = {
@@ -494,21 +471,21 @@ in {
         "dmask=0077"
       ];
     };
-    "/mnt/cache" = {
-      device = "192.168.1.102:/volume1/cache";
-      fsType = "nfs";
-      options = [
-        "x-systemd.automount"
-        "noauto"
-        "x-systemd.idle-timeout=600"
-      ];
-    };
+    # "/mnt/cache" = {
+    #   device = "192.168.1.102:/volume1/cache";
+    #   fsType = "nfs";
+    #   options = [
+    #     "x-systemd.automount"
+    #     "noauto"
+    #     "x-systemd.idle-timeout=600"
+    #   ];
+    # };
   };
 
   swapDevices = [
     {
       device = "/dev/disk/by-partlabel/disk-swap";
-      size = 16 * 1024;
+      # size = 16 * 1024;
       options = ["discard"];
     }
   ];
