@@ -137,11 +137,11 @@ in {
           "qcom/gen71500_gmu.bin"
           "qcom/gen71500_zap.mbn"
 
-          # "qcom/x1p42100/qcadsp8380.mbn"
-          # "qcom/x1p42100/qccdsp8380.mbn"
-          # "qcom/x1p42100/qcdxkmsuc8380.mbn"
-          # "qcom/x1p42100/qcdxkmsucpurwa.mbn"
-          # "qcom/x1p42100/qcvss8380.mbn"
+          "qcom/x1p42100/qcadsp8380.mbn"
+          "qcom/x1p42100/qccdsp8380.mbn"
+          "qcom/x1p42100/qcdxkmsuc8380.mbn"
+          "qcom/x1p42100/qcdxkmsucpurwa.mbn"
+          "qcom/x1p42100/qcvss8380.mbn"
         ]
         ++ qcom-firmware-paths;
     };
