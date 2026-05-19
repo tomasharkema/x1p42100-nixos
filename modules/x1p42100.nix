@@ -35,7 +35,7 @@
     "qcom/x1p42100/Microsoft/Surface12/qcdxkmbase8380_pa_111.bin"
     "qcom/x1p42100/Microsoft/Surface12/qcdxkmsuc8380.mbn"
     "qcom/x1p42100/Microsoft/Surface12/qcdxkmsucpurwa.mbn"
-  ];
+    ];
   boot-firmware = builtins.listToAttrs (map (v: {
       name = "firmware/${v}";
       value = builtins.unsafeDiscardStringContext "${firm}/lib/firmware/${v}";
@@ -141,7 +141,7 @@ in {
           "qcom/x1p42100/qccdsp8380.mbn"
           "qcom/x1p42100/qcdxkmsuc8380.mbn"
           "qcom/x1p42100/qcdxkmsucpurwa.mbn"
-          "qcom/x1p42100/qcvss8380.mbn"
+          # "qcom/x1p42100/qcvss8380.mbn"
         ]
         ++ qcom-firmware-paths;
     };
