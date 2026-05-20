@@ -53,10 +53,13 @@ in
         REGULATOR_QCOM_RPM = yes;
         SCHED_CLUSTER = yes;
         TYPEC = yes;
+        VIRTUALIZATION = yes;
+        KVM = yes;
+        MAGIC_SYSRQ = yes;
+        FW_LOADER_COMPRESS = yes;
+        FW_LOADER_COMPRESS_ZSTD = yes;
+        CRYPTO_ZSTD = yes;
       };
-      #   VIRTUALIZATION = yes;
-      #   KVM = yes;
-      #   MAGIC_SYSRQ = yes;
 
       #   # Stuff to reduce compile times.
       #   ACPI = no;
