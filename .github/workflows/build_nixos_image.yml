@@ -1,0 +1,205 @@
+# Build NixOS ISO for Lenovo IdeaPad Slim 5x (Qualcomm Snapdragon X Plus x1p42100)
+#
+# This workflow builds natively on GitHub's arm64 hosted runners. The flake
+# targets aarch64-linux, and the runner IS an ARM64 VM, so no QEMU emulation
+# or cross-compilation is needed.
+#
+# Available ARM64 runners (GitHub-hosted):
+#   - ubuntu-24.04-arm (public repos: 4 vCPU / 16 GB RAM / 14 GB SSD)
+#   - ubuntu-22.04-arm (public repos: 4 vCPU / 16 GB RAM / 14 GB SSD)
+#   - ubuntu-24.04-arm (private repos: 2 vCPU /  8 GB RAM / 14 GB SSD)
+#   - ubuntu-22.04-arm (private repos: 2 vCPU /  8 GB RAM / 14 GB SSD)
+#
+# DISK SPACE WARNING:
+# Standard ARM runners have ~14 GB SSD. A NixOS ISO build (kernel + full
+# nixpkgs closure + squashfs) can exceed this. Consider:
+#   - Using the "build-system" job as a lighter CI check (builds the system
+#     closure only, no ISO)
+#   - Setting up a self-hosted runner on an actual ARM64 machine for full
+#     ISO builds
+
+name: Build NixOS ISO
+
+on:
+  # Lightweight system closure builds on every push
+  push:
+    branches: ["dev"]
+  # Full ISO build only when manually triggered (saves runner minutes)
+  workflow_dispatch:
+  # Uncomment to also build on PRs
+  # pull_request:
+
+# Cancel in-progress runs for the same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ############################################################################
+  # FULL ISO BUILD (native ARM64) — manual trigger only
+  ############################################################################
+  build-iso:
+    name: Build ISO (native ARM64)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 360
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # ------------------------------------------------------------------
+      # Nix Installation
+      # ------------------------------------------------------------------
+      - name: Install Nix
+        uses: cachix/install-nix-action@v30
+        with:
+          extra_nix_config: |
+            # Keep within GitHub runner disk limits
+            keep-derivations = false
+            keep-outputs = false
+            auto-optimise-store = false
+            # Use all available cores
+            cores = 0
+            max-jobs = auto
+
+      # ------------------------------------------------------------------
+      # Binary Caching (Cachix)
+      # ------------------------------------------------------------------
+      # This repo already uses Cachix (see devenv.nix). Set up caching to
+      # avoid rebuilding the world every time.
+      - name: Set up Cachix
+        uses: cachix/cachix-action@v15
+        with:
+          name: qcom-x1p42100
+          # To push to the cache, set CACHIX_AUTH_TOKEN in your repository
+          # secrets. Without it, builds will still download from the cache
+          # but won't upload.
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN || '' }}
+          # Skip pushing if no token is set
+          skipPush: ${{ secrets.CACHIX_AUTH_TOKEN == '' }}
+
+      # ------------------------------------------------------------------
+      # Free disk space before building
+      # ------------------------------------------------------------------
+      - name: Free disk space
+        run: |
+          # Remove large pre-installed toolchains we don't need
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/hostedtoolcache 2>/dev/null || true
+          df -h /
+
+      # ------------------------------------------------------------------
+      # Build the ISO
+      # ------------------------------------------------------------------
+      - name: Build NixOS ISO image
+        run: |
+          nix build \
+            --extra-experimental-features 'nix-command flakes' \
+            --print-build-logs \
+            --show-trace \
+            .#nixosConfigurations.slim5xISO.config.system.build.isoImage
+
+      # ------------------------------------------------------------------
+      # Upload the result
+      # ------------------------------------------------------------------
+      - name: Upload ISO artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nixos-iso-arm64
+          path: result/*.iso
+          if-no-files-found: error
+          retention-days: 30
+
+  ############################################################################
+  # LIGHTWEIGHT: Build system closure on every push (no ISO image)
+  ############################################################################
+  # Fast CI check that the configuration evaluates and builds correctly.
+  # Uses much less disk space than the full ISO build.
+  build-system:
+    name: Build system closure
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 360
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v30
+        with:
+          extra_nix_config: |
+            keep-derivations = false
+            keep-outputs = false
+            cores = 0
+            max-jobs = auto
+
+      - name: Set up Cachix
+        uses: cachix/cachix-action@v15
+        with:
+          name: qcom-x1p42100
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN || '' }}
+          skipPush: ${{ secrets.CACHIX_AUTH_TOKEN == '' }}
+
+      - name: Build system closure
+        run: |
+          nix build \
+            --extra-experimental-features 'nix-command flakes' \
+            --print-build-logs \
+            --show-trace \
+            .#nixosConfigurations.qcom-nixos.config.system.build.toplevel
+
+      - name: Upload closure artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nixos-system-closure
+          path: result
+          if-no-files-found: warn
+          retention-days: 14
+
+  ############################################################################
+  # OPTIONAL: Self-hosted runner (uncomment for builds on actual hardware)
+  ############################################################################
+  # If you want to run the build on your Lenovo IdeaPad itself (more disk
+  # space, faster I/O), set up a self-hosted runner labeled "arm64":
+  #
+  #   Repo → Settings → Actions → Runners → New self-hosted runner
+  #   Choose Linux + ARM64, follow instructions, label with "arm64"
+  #
+  # build-iso-selfhosted:
+  #   name: Build ISO (self-hosted)
+  #   runs-on: [self-hosted, arm64]
+  #   timeout-minutes: 120
+  #
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #
+  #     - name: Install Nix
+  #       uses: cachix/install-nix-action@v30
+  #       with:
+  #         extra_nix_config: |
+  #           keep-derivations = false
+  #           keep-outputs = false
+  #           cores = 0
+  #           max-jobs = auto
+  #
+  #     - name: Set up Cachix
+  #       uses: cachix/cachix-action@v15
+  #       with:
+  #         name: qcom-x1p42100
+  #         authToken: ${{ secrets.CACHIX_AUTH_TOKEN || '' }}
+  #         skipPush: ${{ secrets.CACHIX_AUTH_TOKEN == '' }}
+  #
+  #     - name: Build NixOS ISO image
+  #       run: |
+  #         nix build \
+  #           --extra-experimental-features 'nix-command flakes' \
+  #           --print-build-logs \
+  #           --show-trace \
+  #           .#nixosConfigurations.slim5xISO.config.system.build.isoImage
+  #
+  #     - name: Upload ISO artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: nixos-iso-selfhosted
+  #         path: result/*.iso
+  #         if-no-files-found: error
+  #         retention-days: 30
