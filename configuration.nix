@@ -379,7 +379,7 @@ in {
     videoDrivers = [
       "modesetting"
       "fbdev"
-      "displaylink"
+      # "displaylink"
     ];
   };
 
