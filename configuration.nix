@@ -87,9 +87,18 @@ in {
   programs.geary.enable = true;
   environment.shells = [pkgs.zsh];
   programs.nh.enable = true;
-  programs._1password.enable = true;
+  programs._1password = {
+    enable = true;
+    package = pkgs._1password-cli;
+  };
   programs._1password-gui = {
     enable = true;
+    package = pkgs._1password-gui.overrideAttrs (old: {
+      src = pkgs.fetchurl {
+        url = "https://downloads.1password.com/linux/tar/stable/aarch64/1password-8.12.21.arm64.tar.gz";
+        hash = "sha256-WPFUqKKfdadzF7BtR9gUm0SlYq4ZN36eICfGsPxirH0=";
+      };
+    });
     polkitPolicyOwners = ["tomas"];
   };
   virtualisation.docker.enable = true;
