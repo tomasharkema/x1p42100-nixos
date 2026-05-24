@@ -80,24 +80,76 @@ jobs:
           skipPush: ${{ secrets.CACHIX_AUTH_TOKEN == '' }}
 
       # ------------------------------------------------------------------
-      # Free disk space before building
+      # Aggressive disk space cleanup before building
       # ------------------------------------------------------------------
       - name: Free disk space
         run: |
-          # Remove large pre-installed toolchains we don't need
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/hostedtoolcache 2>/dev/null || true
+          echo "=== Initial disk usage ==="
           df -h /
+          
+          # Remove large pre-installed toolchains we don't need
+          sudo rm -rf /usr/share/dotnet 2>/dev/null || true
+          sudo rm -rf /usr/local/lib/android 2>/dev/null || true
+          sudo rm -rf /opt/hostedtoolcache 2>/dev/null || true
+          
+          # Clean apt cache
+          sudo apt-get clean
+          sudo rm -rf /var/lib/apt/lists/*
+          
+          # Remove unused snaps
+          sudo snap remove snapd 2>/dev/null || true
+          
+          # Remove Docker images and containers
+          docker system prune -af --volumes 2>/dev/null || true
+          
+          # Remove unused packages
+          sudo apt-get autoremove -y 2>/dev/null || true
+          
+          echo "=== Disk usage after cleanup ==="
+          df -h /
+          echo "Available space: $(df / | tail -1 | awk '{print $4}')"
 
       # ------------------------------------------------------------------
-      # Build the ISO
+      # Monitor disk during build
       # ------------------------------------------------------------------
       - name: Build NixOS ISO image
         run: |
+          set -e
+          
+          # Function to monitor disk space
+          check_disk() {
+            local available=$(df / | tail -1 | awk '{print $4}')
+            echo "Available disk space: ${available}K ($(( available / 1024 / 1024 )) GB)"
+          }
+          
+          check_disk
+          
           nix build \
             --extra-experimental-features 'nix-command flakes' \
             --print-build-logs \
             --show-trace \
+            --max-jobs auto \
+            --cores 0 \
             .#nixosConfigurations.slim5xISO.config.system.build.isoImage
+          
+          check_disk
+          echo "Build completed successfully"
+          ls -lh result/ || echo "result/ directory not found"
+
+      # ------------------------------------------------------------------
+      # Verify ISO was created before uploading
+      # ------------------------------------------------------------------
+      - name: Verify ISO exists
+        run: |
+          if [ -f result/*.iso ]; then
+            echo "✓ ISO file found:"
+            ls -lh result/*.iso
+          else
+            echo "✗ No ISO file found in result/"
+            echo "Contents of result/:"
+            ls -la result/ || echo "result/ directory does not exist"
+            exit 1
+          fi
 
       # ------------------------------------------------------------------
       # Upload the result
@@ -154,52 +206,3 @@ jobs:
           path: result
           if-no-files-found: warn
           retention-days: 14
-
-  ############################################################################
-  # OPTIONAL: Self-hosted runner (uncomment for builds on actual hardware)
-  ############################################################################
-  # If you want to run the build on your Lenovo IdeaPad itself (more disk
-  # space, faster I/O), set up a self-hosted runner labeled "arm64":
-  #
-  #   Repo → Settings → Actions → Runners → New self-hosted runner
-  #   Choose Linux + ARM64, follow instructions, label with "arm64"
-  #
-  # build-iso-selfhosted:
-  #   name: Build ISO (self-hosted)
-  #   runs-on: [self-hosted, arm64]
-  #   timeout-minutes: 120
-  #
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #
-  #     - name: Install Nix
-  #       uses: cachix/install-nix-action@v30
-  #       with:
-  #         extra_nix_config: |
-  #           keep-derivations = false
-  #           keep-outputs = false
-  #           cores = 0
-  #           max-jobs = auto
-  #
-  #     - name: Set up Cachix
-  #       uses: cachix/cachix-action@v15
-  #       with:
-  #         name: qcom-x1p42100
-  #         authToken: ${{ secrets.CACHIX_AUTH_TOKEN || '' }}
-  #         skipPush: ${{ secrets.CACHIX_AUTH_TOKEN == '' }}
-  #
-  #     - name: Build NixOS ISO image
-  #       run: |
-  #         nix build \
-  #           --extra-experimental-features 'nix-command flakes' \
-  #           --print-build-logs \
-  #           --show-trace \
-  #           .#nixosConfigurations.slim5xISO.config.system.build.isoImage
-  #
-  #     - name: Upload ISO artifact
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: nixos-iso-selfhosted
-  #         path: result/*.iso
-  #         if-no-files-found: error
-  #         retention-days: 30
