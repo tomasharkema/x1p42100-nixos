@@ -125,7 +125,14 @@ jobs:
           
           kill $BG_PID 2>/dev/null || true
           mkdir -p iso-output
-          ln result/iso/*.iso iso-output/ || ln result/*.iso iso-output/
+
+          # Copy ISO to output directory (avoids hard link permission issues)
+          if [ -d result/iso ]; then
+            cp result/iso/*.iso iso-output/
+          else
+            cp result/*.iso iso-output/
+          fi
+
           ls -lh iso-output/
 
       # ------------------------------------------------------------------
