@@ -17,7 +17,7 @@
     firmware = with pkgs; [
       linux-firmware
       wireless-regdb
-      (pkgs.callPackage ./modules/firmware.nix {})
+      (pkgs.callPackage ./packages/firmware.nix {})
     ];
   };
 
@@ -26,7 +26,7 @@
     "firmware".source = "${lib.makeSearchPath "lib/firmware" (with pkgs; [
       linux-firmware
       wireless-regdb
-      (pkgs.callPackage ./modules/firmware.nix {})
+      (pkgs.callPackage ./packages/firmware.nix {})
     ])}";
   };
 
@@ -36,7 +36,7 @@
     # Ensure firmware files are included in the squashfs
     contents = [
       {
-        source = "${pkgs.callPackage ./modules/firmware.nix {}}/lib/firmware";
+        source = "${pkgs.callPackage ./packages/firmware.nix {}}/lib/firmware";
         target = "/lib/firmware";
       }
     ];
