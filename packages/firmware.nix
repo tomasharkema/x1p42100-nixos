@@ -40,14 +40,14 @@ stdenv.mkDerivation (finalAttrs: {
     python3
   ];
 
-  # install -m600 "${finalAttrs.qcvss8380}" $out/lib/firmware/qcom/x1p42100/qcvss8380.mbn
-
   buildCommand = ''
     mkdir -p $out/lib/firmware/qcom
-    cp -va ${finalAttrs.sp12}/lib/firmware/qcom $out/lib/firmware/
+    cp -va ${finalAttrs.sp12}/lib/firmware/qcom/* $out/lib/firmware/qcom
 
     mkdir -p $out/share
-    cp -vr ${finalAttrs.sp12}/usr/share/alsa $out/share
+    if [ -d "${finalAttrs.sp12}/usr/share/alsa" ]; then
+      cp -vr ${finalAttrs.sp12}/usr/share/alsa $out/share
+    fi
 
     mkdir -p $out/lib/firmware/ath12k/WCN7850/hw2.0
 
