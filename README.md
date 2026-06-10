@@ -1,3 +1,7 @@
+# Updates
+- As of kernel 7.1, bootmac has been integrated into the kernel configuration, and is included with jglathe's shipped kernel
+
+
 # NixOS for x1p42100
 
 NixOS for the Qualcomm Snapdragon X Plus (x1p42100) based _Lenovo Ideapad Slim

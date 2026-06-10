@@ -18,7 +18,7 @@
     linux_7_1 = {
       version = "7.1.0-rc6";
       rev = "jg/ubuntu-qcom-x1e-7.1rc";
-      sha256 = "sha256-ndchhWlAugWW7ojjj10U0y8Sh7fKyrM3NUyQ4F65Dzc=";
+      sha256 = "sha256-FsmDBYYK80DTukzA0gr7iMaBE/nkDFUPgpx0rW5dDg8=";
     };
   };
 
@@ -35,10 +35,10 @@ in
       };
 
       kernelPatches = [
-        {
-          name = "mac-address";
-          patch = ./mac-address.patch;
-        }
+        # {
+        #   name = "mac-address";
+        #   patch = ./mac-address.patch;
+        # }
       ];
 
       structuredExtraConfig = with lib.kernel; {

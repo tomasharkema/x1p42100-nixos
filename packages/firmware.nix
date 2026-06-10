@@ -17,7 +17,7 @@ stdenv.mkDerivation (finalAttrs: {
     owner = "harrisonvanderbyl";
     repo = "surface-pro-12-inch-linux";
     rev = "main";
-    hash = "sha256-FMRoZ6g14xGwpuS6le1RsJQkRbq+EQ4ffE4Dwr17GL0=";
+    hash = "sha256-uEfPZjTuS8T8mYGE8h54A4hcOeu6o7E/v3gAJGcavUo=";
   };
 
   ath12 = fetchzip {
