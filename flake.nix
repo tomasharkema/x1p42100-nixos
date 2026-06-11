@@ -61,11 +61,11 @@
 
             fileSystems = {
               "/" = {
-                device = "/dev/disk/by-label/root";
-                fsType = "ext4";
+                device = "/dev/disk/by-label/root-arm64";
+                fsType = "btrfs";
               };
               "/boot" = {
-                device = "/dev/disk/by-label/SYSTEM_DRV";
+                device = "/dev/disk/by-label/BOOT";
                 fsType = "vfat";
               };
             };
