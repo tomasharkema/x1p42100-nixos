@@ -514,7 +514,7 @@ in {
   ];
   boot.resumeDevice = "/dev/disk/by-partlabel/disk-swap";
   # boot.kernelPackages = pkgs.callPackage ./packages/x1e42100-linux.nix { withCcache = true; };
-  boot.kernelPackages = lib.mkForce (pkgs.callPackage ./packages/x1e42100-linux.nix { withCcache = true; });
+  boot.kernelPackages = lib.mkForce (pkgs.callPackage ./packages/x1e42100-linux.nix { withCcache = false; });
   zramSwap.enable = true;
 
   system.stateVersion = "26.05";
