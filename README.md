@@ -1,3 +1,6 @@
+# Build command 
+sudo nixos-install --root /mnt --no-channel-copy --no-root-password --flake .?submodules=1#qcom-nixos
+
 # Updates
 - As of kernel 7.1, bootmac has been integrated into the kernel configuration, and is included with jglathe's shipped kernel
 

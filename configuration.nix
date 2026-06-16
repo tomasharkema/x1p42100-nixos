@@ -26,6 +26,7 @@
 in {
   imports = [
     ./hardware.nix
+    ./firmware.nix
     ./ccache.nix
   ];
   nixpkgs.config.allowUnfree = true;
@@ -371,7 +372,7 @@ in {
 
   services.openssh.enable = true;
 
-  boot.plymouth.enable = true;
+  # boot.plymouth.enable = true;
 
   services.xserver = {
     enable = true;
