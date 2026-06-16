@@ -1,58 +1,48 @@
 { pkgs, ... }:
 
 let
-  # 1. Fetch Harrison's repository directly out-of-band via GitHub API
-  surface-repo = pkgs.fetchFromGitHub {
+  surface_12_repo = pkgs.fetchFromGitHub {
     owner = "harrisonvanderbyl";
     repo = "surface-pro-12-inch-linux";
     rev = "main"; 
-    
-    # NOTE: This is a placeholder hash. Nix will intentionally fail on the first run 
-    # and print the correct sha256 hash. Copy that hash and paste it here!
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    # Cache-busting zero-hash to force an absolute fresh download from GitHub
+    hash = "sha256-0000000000000000000000000000000000000000000="; 
   };
 
-  # 2. Build the firmware derivation out of the fetched source
-  surface-firmware = pkgs.stdenvNoCC.mkDerivation {
-    name = "snapdragon-surface-firmware";
-    src = surface-repo; 
+  # THE SEVERING BLOW: Force Nix to forget where this path came from.
+  # This strips the dependency context string so modules-shrunk doesn't throw a fit.
+  untracked-repo = builtins.unsafeDiscardStringContext "${surface_12_repo}";
 
-    dontBuild = true;
+  harrison-firmware = pkgs.runCommand "snapdragon-firmware-v3" {
+    # Hard boundary: ensure the output derivation itself contains no outside references
+    allowedReferences = [ "out" ]; 
+  } ''
+    # 1. Create the base target destination tree
+    mkdir -p $out/lib
 
-    installPhase = ''
-      # Generate the strict destination directory tree required by the SoC
-      mkdir -p "$out/lib/firmware/qcom/x1p42100/Microsoft/Surface12"
-      
-      # Handle repo variants: copy from 'firmware/' folder if it exists, otherwise copy root contents
-      cp -r lib/firmware/* "$out/lib/firmware/"
-    '';
-  };
+    # 2. Copy the entire firmware folder tree wholesale.
+    # This completely eliminates bash wildcard (*) expansion parsing issues.
+    cp -R ${untracked-repo}/lib/firmware $out/lib/
+  '';
 in
 {
-  # Allow unfree drivers (needed for proprietary Qualcomm .mbn firmware blobs)
   nixpkgs.config.allowUnfree = true;
 
-  # Expose the derivation contents to the running Stage 2 OS filesystem
-  hardware.firmware = [ 
-    surface-firmware 
-  ];
+  # Load our hand-curated folder layout into the system firmware array
+  hardware.firmware = [ harrison-firmware ];
 
-  # Pre-load storage and graphics infrastructure modules during immediate initialization
+  # Load the core system storage and graphics controllers into Stage 1
   boot.initrd.kernelModules = [ "nvme" "msm" "qcom-iris" ];
 
-  # Force-compress the firmware derivation into the Stage 1 RAM disk string path
+  # Point the Stage 1 initrd loader directly to our ultra-lean, un-referenced store path
   boot.initrd.extraFirmwarePaths = [
-    "${surface-firmware}"
+    "${harrison-firmware}/lib/firmware"
   ];
 
-  # Force systemd-boot to execute unified capsules (.efi) instead of broken split text configurations
+  # Standard working systemd-boot setup
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.systemd-boot = {
-    enable = true;
-    unifiedEntries.enable = true; 
-  };
+  boot.loader.systemd-boot.enable = true;
 
-  # Prevent the Snapdragon SoC from aggressively shutting down display lines before graphics load
   boot.kernelParams = [
     "earlycon=efifb"
     "video=efifb:off"
