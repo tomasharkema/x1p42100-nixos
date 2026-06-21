@@ -1,7 +1,7 @@
-diff --git a/arch/arm64/boot/dts/qcom/x1p42100-microsoft-sp12.dts b/arch/arm64/boot/dts/qcom/x1p42100-microsoft-sp12.dts
+diff --git a/arch/arm64/boot/dts/qcom/x1p42100-microsoft-sp12in.dts b/arch/arm64/boot/dts/qcom/x1p42100-microsoft-sp12in.dts
 index 37d6abdc6..b400c3329 100644
---- a/arch/arm64/boot/dts/qcom/x1p42100-microsoft-sp12.dts
-+++ b/arch/arm64/boot/dts/qcom/x1p42100-microsoft-sp12.dts
+--- a/arch/arm64/boot/dts/qcom/x1p42100-microsoft-sp12in.dts
++++ b/arch/arm64/boot/dts/qcom/x1p42100-microsoft-sp12in.dts
 @@ -873,7 +873,7 @@ wifi@0 {
  		vddpcie1p8-supply = <&vreg_pmu_pcie_1p8>;
  
