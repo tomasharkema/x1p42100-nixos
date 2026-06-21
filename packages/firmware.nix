@@ -17,7 +17,7 @@ stdenv.mkDerivation (finalAttrs: {
     owner = "harrisonvanderbyl";
     repo = "surface-pro-12-inch-linux";
     rev = "main";
-    hash = "sha256-JNRtDfnpj6LX+auUPUjv4EmpC01c+WPMb70Xm5u9oRA=";
+    sha256 = "sha256-FMRoZ6g14xGwpuS6le1RsJQkRbq+EQ4ffE4Dwr17GL0="; #"sha256-JNRtDfnpj6LX+auUPUjv4EmpC01c+WPMb70Xm5u9oRA=";
   };
 
   ath12 = fetchzip {
@@ -25,18 +25,17 @@ stdenv.mkDerivation (finalAttrs: {
     sha256 = "sha256-DGyEp4+UGGuJ0qiM+jaHl6xOd02hCk92j28fIlGSoK4=";
   };
 
-  board-2 =
-    #"${linux-firmware}/lib/firmware/ath12k/WCN7850/hw2.0/board-2.bin";
-    "${finalAttrs.ath12}/WCN7850/hw2.0/board-2.bin";
+  board-2 = "${linux-firmware}/lib/firmware/ath12k/WCN7850/hw2.0/board-2.bin";
+  # "${finalAttrs.ath12}/WCN7850/hw2.0/board-2.bin";
 
   bdencoder = fetchurl {
     url = "https://raw.githubusercontent.com/qca/qca-swiss-army-knife/f2164085920540f4ecbfa0b12959918c601724b6/tools/scripts/ath12k/ath12k-bdencoder";
-    hash = "sha256-hzn/GVo7nZmuBpuBsEZUcf928w03cgANq+kaUlGmeYA=";
+    sha256 = "sha256-hzn/GVo7nZmuBpuBsEZUcf928w03cgANq+kaUlGmeYA=";
   };
 
   nativeBuildInputs = [
     cabextract
-    rsync
+    # rsync
     python3
   ];
 
@@ -46,8 +45,8 @@ stdenv.mkDerivation (finalAttrs: {
     mkdir -p $out/lib/firmware/qcom
     cp -va ${finalAttrs.sp12}/lib/firmware/qcom $out/lib/firmware/
 
-    mkdir -p $out/share
-    cp -vr ${finalAttrs.sp12}/usr/share/alsa $out/share
+    #mkdir -p $out/share
+    #cp -vr ${finalAttrs.sp12}/usr/share/alsa $out/share
 
     mkdir -p $out/lib/firmware/ath12k/WCN7850/hw2.0
 
@@ -55,8 +54,8 @@ stdenv.mkDerivation (finalAttrs: {
     #ls -lah $out/lib/firmware/ath12k
 
     python3 ${finalAttrs.bdencoder} --extract ${finalAttrs.board-2}
-    ls -la
-    cat board-2.json
+
+    # cat board-2.json
     mv "bus=pci,vendor=17cb,device=1107,subsystem-vendor=17cb,subsystem-device=3378,qmi-chip-id=2,qmi-board-id=255.bin" $out/lib/firmware/ath12k/WCN7850/hw2.0/board.bin
 
     find "$out" -exec touch --date=2000-01-01 {} +

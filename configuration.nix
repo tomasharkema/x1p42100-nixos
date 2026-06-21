@@ -7,7 +7,7 @@
 }: let
   readmbn = pkgs.callPackage ./packages/readmbn.nix {};
   firm = pkgs.callPackage ./packages/firmware.nix {};
-
+  clearviewhwy = pkgs.callPackage ./packages/clearviewhwy.nix {};
   alsa-ucm-conf-firm = pkgs.symlinkJoin {
     inherit
       (pkgs.alsa-ucm-conf)
@@ -116,6 +116,7 @@ in {
     attic-client
     autojump
     bottles
+    clearviewhwy
     bottom
     brave
     btop
@@ -130,7 +131,7 @@ in {
     devenv
     direnv
     distrobox
-    firefoxpwa
+    # firefoxpwa
     firmware-manager
     firmware-updater
     flatpak-builder
@@ -228,6 +229,7 @@ in {
       nerd-fonts.jetbrains-mono
       nerd-fonts.adwaita-mono
       adwaita-fonts
+      clearviewhwy
     ];
   };
   programs.dconf.profiles.tomas.databases = [
@@ -252,12 +254,7 @@ in {
   services.kmscon = {
     enable = true;
 
-    fonts = [
-      {
-        name = "AdwaitaMono-Regular";
-        package = pkgs.adwaita-fonts;
-      }
-    ];
+    config.font-name = "AdwaitaMono-Regular";
   };
 
   # rtkit (optional, recommended) allows Pipewire to use the realtime scheduler for increased performance.
@@ -276,7 +273,7 @@ in {
     };
   };
   services.cachefilesd.enable = true;
-
+  services.usbmuxd.enable = true;
   networking.modemmanager.enable = false;
 
   # # set up enivronment so that UCM configs are used as well
