@@ -45,7 +45,7 @@ in {
   hardware = {
     deviceTree = {
       enable = true;
-      name = lib.mkDefault "qcom/x1p42100-microsoft-sp12in.dtb";
+      name = "qcom/x1p42100-microsoft-sp12in.dtb";
     };
     # enableAllFirmware = true; # lib.mkForce false; # true;;
     # enableRedistributableFirmware = true; # lib.mkForce false; # true;;
@@ -55,10 +55,10 @@ in {
     ];
   };
 
-  specialisation.el2.configuration = {
-    hardware.deviceTree.name = lib.replaceString ".dtb" "-el2.dtb" config.hardware.deviceTree.name;
-    boot.kernelParams = ["id_aa64mmfr0.ecv=1"];
-  };
+  #specialisation.el2.configuration = {
+  #  hardware.deviceTree.name = lib.replaceString ".dtb" "-el2.dtb" config.hardware.deviceTree.name;
+  #  boot.kernelParams = ["id_aa64mmfr0.ecv=1"];
+  #};
 
   systemd.tpm2.enable = false;
   boot = {
