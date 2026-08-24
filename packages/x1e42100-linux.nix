@@ -14,10 +14,10 @@
       sha256 = "sha256-+geHPb+Y2RxH4Yt/OyBgsQg0iG7RFoXEYcK0C29k4GI=";
     };
     linux_7_1 = {
-      version = "7.1.2";
+      version = "7.1.7";
       # rev = "jg/ubuntu-qcom-x1e-7.1.y";
       rev = "jg/ubuntu-qcom-x1e-oldconfig-7.1.y";
-      sha256 = "sha256-NNUSJgO/81ubRe/t3VfPIBqB6ae+sIPzyzJjITUFIV4=";
+      sha256 = "sha256-nxNGVVfitUoFFtutu/MQlrygE0U99l06Rj9/qWOeflY=";
     };
   };
 
