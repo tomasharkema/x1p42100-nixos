@@ -20,8 +20,12 @@
       sha256 = "sha256-nxNGVVfitUoFFtutu/MQlrygE0U99l06Rj9/qWOeflY=";
     };
   };
-
-  selected = versions.linux_7_1;
+  linux_7_3 = {
+    version = "7.3.0";
+    rev = "jq/ubuntu-qcom-x1e-7.3.y";
+    sha256 = "";
+  };
+  selected = versions.linux_7_3;
 in
   linuxPackagesFor (
     (buildLinux {
@@ -155,5 +159,5 @@ in
       #   SND_PCI = no;
       # };
     })
-   .override {stdenv = ccacheStdenv;}
+    # .override {stdenv = ccacheStdenv;}
   )
