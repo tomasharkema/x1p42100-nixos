@@ -39,7 +39,7 @@ in {
     };
     initrd = {
       enable = true;
-      systemd.enable = true;
+      # systemd.enable = true;
     };
   };
 
