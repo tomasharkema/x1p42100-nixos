@@ -13,7 +13,6 @@
     MAXSIZE = "20GB";
     RESHARE = "true";
     REMOTE_STORAGE = "file://${remoteDir}";
-    
   };
 
   withCcachePrefix = lib.mapAttrs' (name: value: lib.nameValuePair ("CCACHE_" + name) value) ccacheOptions;
@@ -26,7 +25,7 @@
 
   exportVariables = lib.concatStringsSep "\n" exportVariablesList;
 in {
-  config = {
+  config = lib.mkIf false {
     nixpkgs.overlays = [
       (self: super: {
         ccacheWrapper = super.ccacheWrapper.override {

@@ -115,7 +115,7 @@ in {
     apple-cursor
     attic-client
     autojump
-    bottles
+    # bottles
     clearviewhwy
     bottom
     brave
