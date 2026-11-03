@@ -22,7 +22,7 @@
     linux_7_3 = {
       version = "7.3.0";
       rev = "jg/ubuntu-qcom-x1e-7.3.y";
-      sha256 = "sha256-72HSJN8LGSvI1GAbqfO1q62pDI1mnj8DdFqtyuNW6jA=";
+      sha256 = "sha256-Yjtri+ZhLakjChyTu1MBEUYwctyCjBiZs2hnCxjtIUw=";
     };
   };
   selected = versions.linux_7_3;
