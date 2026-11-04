@@ -8,13 +8,8 @@
   ...
 }: let
   versions = {
-    linux_6_19 = {
-      version = "6.19.14";
-      rev = "jg/ubuntu-qcom-x1e-6.19.y";
-      sha256 = "sha256-tttTEDmPLkoGgyn7XNd4OF8roffiddgvPnL+oMd/x1o=";
-    };
     linux_7_1 = {
-      version = "7.1.7";
+      version = "7.1.2";
       # rev = "jg/ubuntu-qcom-x1e-7.1.y";
       rev = "jg/ubuntu-qcom-x1e-oldconfig-7.1.y";
       sha256 = "sha256-nxNGVVfitUoFFtutu/MQlrygE0U99l06Rj9/qWOeflY=";
@@ -25,7 +20,7 @@
       sha256 = "sha256-Yjtri+ZhLakjChyTu1MBEUYwctyCjBiZs2hnCxjtIUw=";
     };
   };
-  selected = versions.linux_6_19;
+  selected = versions.linux_7_1;
 in
   linuxPackagesFor (
     (buildLinux {
@@ -38,10 +33,10 @@ in
       };
 
       kernelPatches = [
-        # {
-        #   name = "mac-address";
-        #   patch = ./mac-address.patch;
-        # }
+        {
+          name = "mac-address";
+          patch = ./mac-address.patch;
+        }
       ];
 
       structuredExtraConfig = with lib.kernel; {

@@ -488,14 +488,14 @@ in {
     # };
   };
 
-  swapDevices = [
-    {
-      device = "/dev/disk/by-partlabel/disk-swap";
-      # size = 16 * 1024;
-      options = ["discard"];
-    }
-  ];
-  boot.resumeDevice = "/dev/disk/by-partlabel/disk-swap";
+  # swapDevices = [
+  #   {
+  #     device = "/dev/disk/by-partlabel/disk-swap";
+  #     # size = 16 * 1024;
+  #     options = ["discard"];
+  #   }
+  # ];
+  # boot.resumeDevice = "/dev/disk/by-partlabel/disk-swap";
   zramSwap.enable = true;
 
   system.stateVersion = "26.05";
