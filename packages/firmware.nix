@@ -22,7 +22,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   ath12 = fetchzip {
     url = "https://git.codelinaro.org/clo/ath-firmware/ath12k-firmware/-/archive/main/ath12k-firmware-main.tar.gz";
-    sha256 = "sha256-DGyEp4+UGGuJ0qiM+jaHl6xOd02hCk92j28fIlGSoK4=";
+    sha256 = "sha256-nPcq/FR3wh1TCv6jaCsiwUC+it8z/CS6H8hX/TksAUQ=";
   };
 
   board-2 = "${linux-firmware}/lib/firmware/ath12k/WCN7850/hw2.0/board-2.bin";

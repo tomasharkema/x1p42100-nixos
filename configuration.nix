@@ -125,7 +125,7 @@ in {
     calc
     caligula
     chromium
-    contact
+    # contact
     darktable
     devcontainer
     devenv
@@ -376,7 +376,7 @@ in {
     videoDrivers = [
       "modesetting"
       "fbdev"
-      "displaylink"
+      # "displaylink"
     ];
   };
 
