@@ -45,7 +45,7 @@ in {
   hardware = {
     deviceTree = {
       enable = true;
-      name = "qcom/x1p42100-microsoft-sp12in.dtb";
+      name = "qcom/x1p42100-microsoft-sp12.dtb";
     };
     # enableAllFirmware = true; # lib.mkForce false; # true;;
     # enableRedistributableFirmware = true; # lib.mkForce false; # true;;

@@ -8,6 +8,12 @@
   ...
 }: let
   versions = {
+    linux_6_19 = {
+      version = "6.19.14";
+      rev = "jg/ubuntu-qcom-x1e-6.19.y";
+      sha256 = "sha256-tttTEDmPLkoGgyn7XNd4OF8roffiddgvPnL+oMd/x1o=";
+    };
+
     linux_7_1 = {
       version = "7.1.2";
       # rev = "jg/ubuntu-qcom-x1e-7.1.y";
@@ -20,7 +26,7 @@
       sha256 = "sha256-Yjtri+ZhLakjChyTu1MBEUYwctyCjBiZs2hnCxjtIUw=";
     };
   };
-  selected = versions.linux_7_1;
+  selected = versions.linux_6_19;
 in
   linuxPackagesFor (
     (buildLinux {
@@ -63,5 +69,5 @@ in
         MAGIC_SYSRQ = yes;
       };
     })
-    # .override {stdenv = ccacheStdenv;}
+    .override {stdenv = ccacheStdenv;}
   )
