@@ -25,7 +25,7 @@ in {
       # "console=tty0"
     ];
     loader = {
-      efi.canTouchEfiVariables = true;
+      efi.canTouchEfiVariables = false; # true;
       systemd-boot = {
         enable = true;
         # enable = lib.mkForce false; # true;
