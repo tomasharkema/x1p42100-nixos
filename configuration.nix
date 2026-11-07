@@ -112,10 +112,12 @@ in {
     # bottles
     clearviewhwy
     bottom
-    brave
+    # brave
     btop
     btrfs-assistant
     cachix
+    jqp
+    jq
     calc
     caligula
     chromium
@@ -259,8 +261,6 @@ in {
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    # If you want to use JACK applications, uncomment the following
-    jack.enable = true;
 
     wireplumber = {
       enable = true;
@@ -370,7 +370,7 @@ in {
     videoDrivers = [
       "modesetting"
       "fbdev"
-      # "displaylink"
+      "displaylink"
     ];
   };
 
@@ -404,7 +404,8 @@ in {
     openFirewall = true;
     publish = {
       workstation = true;
-      userServices = true;
+      addresses = true;
+      domain = true;
     };
   };
   services.rpcbind.enable = true;
@@ -492,5 +493,5 @@ in {
   # boot.resumeDevice = "/dev/disk/by-partlabel/disk-swap";
   zramSwap.enable = true;
 
-  system.stateVersion = "26.05";
+  system.stateVersion = "26.11";
 }
